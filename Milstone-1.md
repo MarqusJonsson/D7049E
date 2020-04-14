@@ -1,9 +1,10 @@
 # Milestone 1 - Pre-production - Game idea and Environment
 ## Game idea
-TODO
+Roguelike
 ## Development enviroment
+C++
 ### Libraries
-TODO
+Ogre3D
 ## Engine license
 TODO
 ## Structure
