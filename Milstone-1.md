@@ -4,12 +4,12 @@ Roguelike
 ## Development enviroment
 C++
 ### Libraries
-Ogre3D
+Ogre3D, OgreOggSound
 ## Engine license
-TODO
+MIT License
 ## Structure
 TODO
 ## Code style
-TODO
+C++ Core
 ## Build tools
 TODO
