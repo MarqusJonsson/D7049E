@@ -4,7 +4,7 @@ Roguelike
 ## Development enviroment
 C++
 ### Libraries
-Ogre3D, OgreOggSound
+bgfx, FMOD
 ## Engine license
 MIT License
 ## Structure
