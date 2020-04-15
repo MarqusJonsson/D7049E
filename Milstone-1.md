@@ -6,7 +6,7 @@ C++
 ### Libraries
 bgfx, OpenAL
 ## Engine license
-MIT License
+MIT License, LGPL license
 ## Structure
 TODO
 ## Code style
