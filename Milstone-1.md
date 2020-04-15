@@ -3,7 +3,7 @@
 Roguelike
 ## Development enviroment
 ### Libraries
-bgfx (3D), OpenAL (audio)
+bgfx (3D), OpenAL (audio), Bullet (physics)
 ## Engine license
 MIT License, LGPL license, Zlib License
 ## Structure
