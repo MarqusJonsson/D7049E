@@ -2,14 +2,14 @@
 ## Game idea
 Roguelike
 ## Development enviroment
-C++
 ### Libraries
-bgfx, OpenAL
+bgfx (3D), OpenAL (audio)
 ## Engine license
 MIT License, LGPL license, Zlib License
 ## Structure
 TODO
 ## Code style
-C++ Core
+C++ Core Guidlines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
 ## Build tools
-
+Microsoft Visual Studio 2017 Community
+MSVC 14.16.2703
