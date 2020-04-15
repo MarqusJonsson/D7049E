@@ -4,7 +4,7 @@ Roguelike
 ## Development enviroment
 C++
 ### Libraries
-bgfx, FMOD
+bgfx, OpenAL
 ## Engine license
 MIT License
 ## Structure
