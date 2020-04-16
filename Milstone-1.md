@@ -26,9 +26,9 @@ Player controls game character using mouse and keyboard input.
 * Enemy with weak spots, enemies that can only be damaged at a certain weak spot to be defeated.
 ## Development environment
 ### Libraries
-bgfx (3D), OpenAL (audio), Bullet (physics)
+bgfx (3D), SoLoud (audio), Bullet (physics)
 ## Engine license
-MIT License, LGPL license, Zlib License
+MIT License, Zlib License
 ## Structure
 TODO
 ## Code style
