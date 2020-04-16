@@ -13,7 +13,7 @@ They player combats enemies using magical spells in order to progress through di
 Player controls game character using mouse and keyboard input.
 ### Mechanics
 #### Player
-* Player health, player has health and if depleated triggers end of game.
+* Player health, player has health and if depleted triggers end of game.
 
 * Player combat, player has a spell which allows firing projectiles in order to damage and defeat enemies.
 
