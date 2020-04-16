@@ -34,5 +34,5 @@ TODO
 ## Code style
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
 ## Build tools
-Microsoft Visual Studio 2017 Community
-MSVC 14.16.2703
+Microsoft Visual Studio 2019 Community
+MSVC 14.25.28610
