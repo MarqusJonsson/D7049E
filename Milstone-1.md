@@ -33,6 +33,7 @@ MIT License, Zlib License
 TODO
 ## Code style
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
+Google C++ Style Guide (https://google.github.io/styleguide/cppguide.html)
 ## Build tools
 Microsoft Visual Studio 2019 Community
 MSVC 14.25.28610
