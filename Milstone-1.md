@@ -1,7 +1,7 @@
 # Milestone 1 - Pre-production - Game idea and Environment
 ## Game idea
 ### Summary
-3D rougelike in a non-realistic medieval setting where you combat enemies on different levels.
+3D roguelike in a non-realistic medieval setting where you combat enemies on different levels.
 ### Gameplay
 They player combats enemies using magical spells in order to progress through different floors. The player starts at floor 1, once there are no enemies left on the current floor they player advances to the next floor. The goal is to get to far as possible, the higher floor number the higher score. Each floor and its enemies gets progressively more difficult and the player gets additional skills and upgrades.
 ### Screens
