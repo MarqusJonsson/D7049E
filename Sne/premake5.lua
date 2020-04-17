@@ -1,31 +1,36 @@
 workspace "Sne"
 	architecture "x64"
+	startproject "Sandbox"
+
 	configurations
 	{
 		"Debug",
 		"Release"
 	}
-	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	
 project "Sne"
 	location "Sne"
 	kind "SharedLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/".. outputdir .."/%{prj.name)")
 	objdir ("bin-int/".. outputdir .."/%{prj.name)")
+	
 	files
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
+	
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 		
 		defines
 		{
-			"SNE_PLATFORM_WINDOWS",
 			"SNE_BUILD_DLL",
 		}
 
@@ -36,20 +41,18 @@ project "Sne"
 
 		filter "configurations:Debug"
 			defines "SNE_DEBUG"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Release"
 			defines "SNE_RELEASE"
-			symbols "On"
+			symbols "on"
 
-		--filters {"system:windows", "configurations:Release"}
-		--buildoptions "/MT"
-
-
-	project "Sandbox"
-		location "Sandbox"
-		kind "ConsoleApp"
-		language "C++"
+project "Sandbox"
+	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/".. outputdir .."/%{prj.name)")
 	objdir ("bin-int/".. outputdir .."/%{prj.name)")
@@ -65,15 +68,8 @@ project "Sne"
 		"Sne/src"
 	}
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 		
-		defines
-		{
-			"SNE_PLATFORM_WINDOWS",
-		}
-
 		links
 		{
 			"Sne"
@@ -81,11 +77,8 @@ project "Sne"
 
 		filter "configurations:Debug"
 			defines "SNE_DEBUG"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Release"
 			defines "SNE_RELEASE"
-			symbols "On"
-
-		--filters {"system:windows", "configurations:Release"}
-		--buildoptions "/MT"
+			symbols "on"
