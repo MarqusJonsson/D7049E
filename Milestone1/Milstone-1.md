@@ -35,6 +35,7 @@ This structure is taken from the book "Game Engine Architecture" (Second Edition
 * **Yellow** - might be needed
 * **Red** - not needed
 * **Grey** - unknown
+
 ![Group B engine structure](Group-B-structure.png)
 ## Code style
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
