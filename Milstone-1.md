@@ -30,7 +30,8 @@ bgfx (3D), SoLoud (audio), Bullet (physics)
 ## Engine license
 MIT License, Zlib License
 ## Structure
-TODO
+![GitHub Logo](/images/logo.png)
+Format: ![Alt Text](url)
 ## Code style
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
 Google C++ Style Guide (https://google.github.io/styleguide/cppguide.html)
