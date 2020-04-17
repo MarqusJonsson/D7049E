@@ -1,7 +1,6 @@
 # Binaries
-**/bin/
-!extlibs/bin/premake/
-bin-int/
+Sne/bin/
+Sne/bin-int/
 
 # Visual Studio files and folder
 .vs/
