@@ -30,7 +30,7 @@ bgfx (3D), SoLoud (audio), Bullet (physics)
 ## Engine license
 MIT License, Zlib License
 ## Structure
-This structure is taken from the book "Game Engine Architecture" (Second Edition) in order to get a better idea of what parts could be needed. We coloured each componenet depending on if we think it is appropiate in our engine after the following rules:
+This structure is taken from the book "Game Engine Architecture" (Second Edition) in order to get a better idea of what parts could be needed. We coloured each componenet depending on if we think it is appropiate in our engine, following the rules:
 * **Green** - most likely needed
 * **Yellow** - might be needed
 * **Red** - not needed
