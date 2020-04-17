@@ -30,6 +30,11 @@ bgfx (3D), SoLoud (audio), Bullet (physics)
 ## Engine license
 MIT License, Zlib License
 ## Structure
+This structure is taken from the book "Game Engine Architecture" (Second Edition) in order to get a better idea of what parts could be needed. We coloured each componenet depending on if we think it is appropiate in our engine after the following rules:
+* **Green** - most likely needed
+* **Yellow** - might be needed
+* **Red** - not needed
+* **Grey** - unknown
 ![Group B engine structure](Group-B-structure.png)
 ## Code style
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
