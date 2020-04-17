@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Directories
+Sne/.vs/
+Sne/bin/
+Sne/bin-int/
+
+# Files
+*.user
