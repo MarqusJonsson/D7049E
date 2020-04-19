@@ -10,9 +10,9 @@ Visual Studio Community 2019
 
 https://visualstudio.microsoft.com/vs/
 
-Premake version 5 Alpha 14
+Premake-5.0.0-alpha14
 
-https://premake.github.io/
+https://premake.github.io/download.html#v5
 
 Git 2.26.1 64 bit
 
