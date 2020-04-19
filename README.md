@@ -26,4 +26,4 @@ Build guide:
 
 2. Go into D7049E/Sne
 
-3. Click on GenerateProjects.bat to build solution (Might to run it several times due to unknown problems, when it displays time taken it means the build was succesful)
+3. Click on GenerateProjects.bat to build solution (Might need to run it several times due to unknown problems, when it displays time taken it means the build was succesful)
