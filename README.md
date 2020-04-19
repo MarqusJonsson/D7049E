@@ -15,7 +15,8 @@ Git 2.26.1 64 bit
 Install guide:
 
 1. Clone the repository
-git clone https://github.com/MarqusJonsson/D7049E
+
+```git clone https://github.com/MarqusJonsson/D7049E```
 
 2. Go into D7049E/Sne
 
