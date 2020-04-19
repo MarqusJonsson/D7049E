@@ -8,7 +8,7 @@ Windows 10
 
 Visual Studio Community 2019
 
-Premake
+Premake version 5 Alpha
 
 Git 2.26.1 64 bit
 
