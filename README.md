@@ -5,8 +5,11 @@ Trello link: https://trello.com/b/0eSpXZMJ/d7049e-group-b
 
 Requirements:
 Windows 10
+
 Visual Studio Community 2019
+
 Premake
+
 Git 2.26.1 64 bit
 
 Install guide:
