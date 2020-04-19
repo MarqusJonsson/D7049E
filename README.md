@@ -12,7 +12,7 @@ Premake version 5 Alpha
 
 Git 2.26.1 64 bit
 
-Install guide:
+Build guide:
 
 1. Clone the repository
 
