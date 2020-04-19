@@ -8,7 +8,7 @@ Windows 10
 
 Visual Studio Community 2019
 
-https://visualstudio.microsoft.com/vs/
+https://visualstudio.microsoft.com/downloads/
 
 Premake-5.0.0-alpha14
 
