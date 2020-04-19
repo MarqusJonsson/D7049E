@@ -8,9 +8,15 @@ Windows 10
 
 Visual Studio Community 2019
 
+https://visualstudio.microsoft.com/vs/
+
 Premake version 5 Alpha
 
+https://premake.github.io/
+
 Git 2.26.1 64 bit
+
+https://git-scm.com/downloads
 
 Build guide:
 
