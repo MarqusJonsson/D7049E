@@ -1,3 +1,9 @@
+
+local BGFX_DIR = "bgfx"
+local BIMG_DIR = "bimg"
+local BX_DIR = "bx"
+local GLFW_DIR = "glfw"
+
 workspace "Sne"
 	architecture "x64"
 	configurations
@@ -86,6 +92,9 @@ project "Sne"
 		filter "configurations:Release"
 			defines "SNE_RELEASE"
 			symbols "On"
+
+
+
 
 		--filters {"system:windows", "configurations:Release"}
 		--buildoptions "/MT"
