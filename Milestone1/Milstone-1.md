@@ -26,7 +26,9 @@ Player controls game character using mouse and keyboard input.
 * Enemy with weak spots, enemies that can only be damaged at a certain weak spot to be defeated.
 ## Development environment
 ### Libraries
-bgfx (3D), SoLoud (audio), Bullet (physics)
+* **bgfx** (3D)
+* **SoLoud** (audio)
+* **Bullet** (physics)
 ## Engine license
 MIT License, Zlib License
 ## Structure
@@ -41,5 +43,6 @@ This structure is taken from the book "Game Engine Architecture" (Second Edition
 C++ Core Guidelines (https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)
 Google C++ Style Guide (https://google.github.io/styleguide/cppguide.html)
 ## Build tools
-Microsoft Visual Studio 2019 Community
-MSVC 14.25.28610
+Microsoft Visual Studio 2019 Community MSVC 14.25.28610
+
+Premake v5.0.0-alpha14
