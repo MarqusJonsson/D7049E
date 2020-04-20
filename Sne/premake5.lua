@@ -158,3 +158,45 @@ project "bx"
 	filter "action:vs*"
 		defines "_CRT_SECURE_NO_WARNINGS"
 	setBxCompat()
+
+project "bgfx"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++14"
+	exceptionhandling "Off"
+	rtti "Off"
+	defines "__STDC_FORMAT_MACROS"
+	files
+	{
+		path.join(BGFX_DIR, "include/bgfx/**.h"),
+		path.join(BGFX_DIR, "src/*.cpp"),
+		path.join(BGFX_DIR, "src/*.h"),
+	}
+	excludes
+	{
+		path.join(BGFX_DIR, "src/amalgamated.cpp"),
+	}
+	includedirs
+	{
+		path.join(BX_DIR, "include"),
+		path.join(BIMG_DIR, "include"),
+		path.join(BGFX_DIR, "include"),
+		path.join(BGFX_DIR, "3rdparty"),
+		path.join(BGFX_DIR, "3rdparty/dxsdk/include"),
+		path.join(BGFX_DIR, "3rdparty/khronos")
+	}
+	filter "configurations:Debug"
+		defines "BGFX_CONFIG_DEBUG=1"
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
+		excludes
+		{
+			path.join(BGFX_DIR, "src/glcontext_glx.cpp"),
+			path.join(BGFX_DIR, "src/glcontext_egl.cpp")
+		}
+	filter "system:macosx"
+		files
+		{
+			path.join(BGFX_DIR, "src/*.mm"),
+		}
+	setBxCompat()
