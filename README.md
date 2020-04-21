@@ -24,7 +24,7 @@ Build guide:
 
 ```git clone https://github.com/MarqusJonsson/D7049E```
 
-2. Go into D7049E/Sne/extlibs and clone bx, bimg, bgfx with the following commands
+2. Go into D7049E/Sne/extlibs and clone bx, bimg, bgfx, glfw with the following commands
 
 ```git clone git://github.com/bkaradzic/bx.git```
 
@@ -33,6 +33,9 @@ Build guide:
 
 
 ```git clone git://github.com/bkaradzic/bgfx.git```
+
+
+```git clone https://github.com/glfw/glfw.git```
 
 3. Go into D7049E/Sne
 
