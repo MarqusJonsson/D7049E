@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core.h"
-
 namespace Sne {
 
 	class SNE_API Application
@@ -11,6 +10,7 @@ namespace Sne {
 		virtual ~Application();
 		
 		void Run();
+		void test();
 	};
 
 	// To be defined in CLIENT

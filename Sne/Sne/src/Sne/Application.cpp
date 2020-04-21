@@ -15,4 +15,7 @@ namespace Sne {
 		while (true);
 	}
 
+	void test()
+	{
+	}
 }
