@@ -12,10 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["glfw"] = "Sne/extlibs/glfw/include"
+IncludeDir["glfw"] = "extlibs/glfw/include"
 
 group "Dependencies"
-	include "Sne/extlibs/glfw"
+	include "extlibs/glfw"
+
+group ""
 
 project "Sne"
 	location "Sne"
@@ -36,7 +38,8 @@ project "Sne"
 	defines 
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
+		--"GLFW_INCLUDE_NONE",
+		"SNE_BUILD_DLL"
 	}
 	
 	includedirs

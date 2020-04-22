@@ -10,7 +10,6 @@ namespace Sne {
 		virtual ~Application();
 		
 		void Run();
-		void test();
 	};
 
 	// To be defined in CLIENT
