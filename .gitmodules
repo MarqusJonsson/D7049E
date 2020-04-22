@@ -1,3 +1,7 @@
 [submodule "Sne/extlibs/glfw"]
 	path = Sne/extlibs/glfw
 	url = https://github.com/MarqusJonsson/glfw
+[submodule "Sne/extlibs/bx"]
+	path = Sne/extlibs/bx
+	url = https://github.com/osksun/bx.git
+	branch = master

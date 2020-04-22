@@ -13,9 +13,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["glfw"] = "extlibs/glfw/include"
+IncludeDir["bx"] = "extlibs/bx/include"
 
 group "Dependencies"
 	include "extlibs/glfw"
+	include "extlibs/bx"
 
 group ""
 
@@ -51,6 +53,7 @@ project "Sne"
 	links
 	{
 		"glfw",
+		"bx",
 		"opengl32.lib"
 	}
 
