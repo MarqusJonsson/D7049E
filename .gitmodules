@@ -1,0 +1,3 @@
+[submodule "Sne/extlibs/glfw"]
+	path = Sne/extlibs/glfw
+	url = https://github.com/MarqusJonsson/glfw
