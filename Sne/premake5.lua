@@ -46,7 +46,7 @@ project "Sne"
 	
 	includedirs
 	{
-		"%{prj.name/src}",
+		"%{prj.name}/src",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.bgfx}"
 	}
