@@ -1,12 +1,8 @@
-# Binaries
-Sne/bin/
-Sne/bin-int/
-
 # Visual Studio files and folder
 .vs/
 **.sln
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
-Sne/extlibs/bin/
-Sne/build/
+# Build folder
+Sne/build/**
