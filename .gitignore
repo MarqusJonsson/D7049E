@@ -9,3 +9,4 @@ Sne/bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 Sne/extlibs/bin/
+Sne/build/
