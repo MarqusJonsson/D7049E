@@ -22,21 +22,8 @@ Build guide:
 
 1. Clone the repository
 
-```git clone https://github.com/MarqusJonsson/D7049E```
+```git clone --recursive https://github.com/MarqusJonsson/D7049E```
 
-2. Go into D7049E/Sne/extlibs and clone bx, bimg, bgfx, glfw with the following commands
+2. Go into D7049E/Sne
 
-```git clone git://github.com/bkaradzic/bx.git```
-
-
-```git clone git://github.com/bkaradzic/bimg.git```
-
-
-```git clone git://github.com/bkaradzic/bgfx.git```
-
-
-```git clone https://github.com/glfw/glfw.git```
-
-3. Go into D7049E/Sne
-
-4. Run GenerateProjects.bat to build solution (might need to run it several times due to unknown problems, when it displays time taken it means the build was succesful)
+3. Run GenerateProjects.bat to build solution (might need to run it several times due to unknown problems, when it displays time taken it means the build was succesful)
