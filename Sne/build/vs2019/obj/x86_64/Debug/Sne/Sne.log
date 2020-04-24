@@ -1,4 +1,0 @@
-﻿  Application.cpp
-  LINK : bin\x86_64\Debug\Sne.dll not found or not built by the last incremental link; performing full link
-     Creating library bin\x86_64\Debug\Sne.lib and object bin\x86_64\Debug\Sne.exp
-  Sne.vcxproj -> C:\dev\D7049E\Sne\build\vs2019\bin\x86_64\Debug\Sne.dll
