@@ -1,0 +1,17 @@
+﻿  astc_file.cc
+  codec.cc
+  endpoint_codec.cc
+  footprint.cc
+  integer_sequence_codec.cc
+  intermediate_astc_block.cc
+  logical_astc_block.cc
+  partition.cc
+  physical_astc_block.cc
+  quantization.cc
+  weight_infill.cc
+  image.cpp
+C:\dev\D7049E\Sne\extlibs\bx\include\bx\inline\allocator.inl(30,52): warning C4267: 'argument': conversion from 'size_t' to 'int32_t', possible loss of data
+  image_gnf.cpp
+C:\dev\D7049E\Sne\extlibs\bx\include\bx\inline\allocator.inl(30,52): warning C4267: 'argument': conversion from 'size_t' to 'int32_t', possible loss of data
+  Generating Code...
+  bimg.vcxproj -> C:\dev\D7049E\Sne\build\vs2019\bin\x86_64\Debug\bimg.lib

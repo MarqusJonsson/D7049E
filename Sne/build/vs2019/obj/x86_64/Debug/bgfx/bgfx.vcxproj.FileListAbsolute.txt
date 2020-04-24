@@ -1,0 +1,2 @@
+C:\dev\D7049E\Sne\build\vs2019\bin\x86_64\Debug\bgfx.pdb
+C:\dev\D7049E\Sne\build\vs2019\obj\x86_64\Debug\bgfx\bgfx.pdb
