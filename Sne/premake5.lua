@@ -47,7 +47,9 @@ project "Sne"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{IncludeDir.glfw}"
+		"%{IncludeDir.glfw}",
+		"%{IncludeDir.bx}",
+		"%{IncludeDir.bx}/compat/msvc;"
 	}
 	
 	links
