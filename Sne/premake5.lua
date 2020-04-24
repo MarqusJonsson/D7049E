@@ -1,35 +1,42 @@
-workspace "Sne"
-	architecture "x64"
-	startproject "Sandbox"
+local BUILD_DIR = path.join("build", _ACTION)
+if _OPTIONS["cc"] ~= nil then
+	BUILD_DIR = BUILD_DIR .. "_" .. _OPTIONS["cc"]
+end
+local BGFX_DIR = "extlibs/bgfx"
+local BIMG_DIR = "extlibs/bimg"
+local BX_DIR = "extlibs/bx"
+local GLFW_DIR = "extlibs/glfw"
 
-	configurations
-	{
-		"Debug",
-		"Release"
-	}
-	
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+solution "Sne"
+	location(BUILD_DIR)
+	startproject "sandbox"
+	configurations { "Release", "Debug" }
+	platforms "x86_64"
+	filter "configurations:Release"
+		defines "NDEBUG"
+		optimize "Full"
+	filter "configurations:Debug*"
+		defines "_DEBUG"
+		optimize "Debug"
+		symbols "On"
+	filter "platforms:x86"
+		architecture "x86"
+	filter "platforms:x86_64"
+		architecture "x86_64"
 
--- Include directories relative to root folder (solution directory)
-IncludeDir = {}
-IncludeDir["glfw"] = "extlibs/glfw/include"
-IncludeDir["bgfx"] = "extlibs/bgfx/include"
+function setBxCompat()
+	filter "action:vs*"
+		includedirs { path.join(BX_DIR, "include/compat/msvc") }
+	filter { "system:windows", "action:gmake" }
+		includedirs { path.join(BX_DIR, "include/compat/mingw") }
+end
 
-group "Dependencies"
-	include "extlibs/glfw"
-	include "extlibs/bgfx"
-
-group ""
+group ""	
 
 project "Sne"
-	location "Sne"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("bin/".. outputdir .."/%{prj.name)")
-	objdir ("bin-int/".. outputdir .."/%{prj.name)")
 	
 	files
 	{
@@ -46,70 +53,148 @@ project "Sne"
 	
 	includedirs
 	{
-		"%{prj.name}/src",
-		"%{IncludeDir.glfw}",
-		"%{IncludeDir.bgfx}"
+		path.join(BGFX_DIR, "include"),
+		path.join(BX_DIR, "include"),
+		path.join(GLFW_DIR, "include")
 	}
-	
-	links
-	{
-		"glfw",
-		"bgfx",
-		"opengl32.lib"
-	}
-
+	links { "bgfx", "bimg", "bx", "glfw" }
 	filter "system:windows"
-		systemversion "latest"
-
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-		}
-
-		filter "configurations:Debug"
-			defines "SNE_DEBUG"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "SNE_RELEASE"
-			symbols "on"
+		links { "opengl32", "gdi32", "kernel32", "psapi" }
+	setBxCompat()
 
 project "Sandbox"
-	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("bin/".. outputdir .."/%{prj.name)")
-	objdir ("bin-int/".. outputdir .."/%{prj.name)")
-
+	exceptionhandling "Off"
+	rtti "Off"
 	files
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
-
 	includedirs
 	{
 		"Sne/src",
 		"Sne/extlibs"
 	}
-	
-	links
+	links { "Sne" }
+
+group "dependencies/bgfx"
+
+project "bgfx"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	exceptionhandling "Off"
+	rtti "Off"
+	defines "__STDC_FORMAT_MACROS"
+	files
 	{
-		"Sne"
+		path.join(BGFX_DIR, "include/bgfx/**.h"),
+		path.join(BGFX_DIR, "src/*.cpp"),
+		path.join(BGFX_DIR, "src/*.h"),
 	}
-	
+	excludes
+	{
+		path.join(BGFX_DIR, "src/amalgamated.cpp"),
+	}
+	includedirs
+	{
+		path.join(BX_DIR, "include"),
+		path.join(BIMG_DIR, "include"),
+		path.join(BGFX_DIR, "include"),
+		path.join(BGFX_DIR, "3rdparty"),
+		path.join(BGFX_DIR, "3rdparty/dxsdk/include"),
+		path.join(BGFX_DIR, "3rdparty/khronos")
+	}
+	filter "configurations:Debug"
+		defines "BGFX_CONFIG_DEBUG=1"
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
+		excludes
+		{
+			path.join(BGFX_DIR, "src/glcontext_glx.cpp"),
+			path.join(BGFX_DIR, "src/glcontext_egl.cpp")
+		}
+	setBxCompat()
+
+project "bimg"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	exceptionhandling "Off"
+	rtti "Off"
+	files
+	{
+		path.join(BIMG_DIR, "include/bimg/*.h"),
+		path.join(BIMG_DIR, "src/image.cpp"),
+		path.join(BIMG_DIR, "src/image_gnf.cpp"),
+		path.join(BIMG_DIR, "src/*.h"),
+		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc")
+	}
+	includedirs
+	{
+		path.join(BX_DIR, "include"),
+		path.join(BIMG_DIR, "include"),
+		path.join(BIMG_DIR, "3rdparty/astc-codec"),
+		path.join(BIMG_DIR, "3rdparty/astc-codec/include"),
+	}
+	setBxCompat()
+
+project "bx"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	exceptionhandling "Off"
+	rtti "Off"
+	defines "__STDC_FORMAT_MACROS"
+	files
+	{
+		path.join(BX_DIR, "include/bx/*.h"),
+		path.join(BX_DIR, "include/bx/inline/*.inl"),
+		path.join(BX_DIR, "src/*.cpp")
+	}
+	excludes
+	{
+		path.join(BX_DIR, "src/amalgamated.cpp"),
+		path.join(BX_DIR, "src/crtnone.cpp")
+	}
+	includedirs
+	{
+		path.join(BX_DIR, "3rdparty"),
+		path.join(BX_DIR, "include")
+	}
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
+	setBxCompat()
+
+group "dependencies"		
+
+project "glfw"
+	kind "StaticLib"
+	language "C"
+	files
+	{
+		path.join(GLFW_DIR, "include/GLFW/*.h"),
+		path.join(GLFW_DIR, "src/context.c"),
+		path.join(GLFW_DIR, "src/egl_context.*"),
+		path.join(GLFW_DIR, "src/init.c"),
+		path.join(GLFW_DIR, "src/input.c"),
+		path.join(GLFW_DIR, "src/internal.h"),
+		path.join(GLFW_DIR, "src/monitor.c"),
+		path.join(GLFW_DIR, "src/osmesa_context.*"),
+		path.join(GLFW_DIR, "src/vulkan.c"),
+		path.join(GLFW_DIR, "src/window.c"),
+	}
+	includedirs { path.join(GLFW_DIR, "include") }
 	filter "system:windows"
-		systemversion "latest"
+		defines "_GLFW_WIN32"
+		files
+		{
+			path.join(GLFW_DIR, "src/win32_*.*"),
+			path.join(GLFW_DIR, "src/wgl_context.*")
+		}
 
-		filter "configurations:Debug"
-			defines "SNE_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "SNE_RELEASE"
-			runtime "Release"
-			symbols "On"
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
