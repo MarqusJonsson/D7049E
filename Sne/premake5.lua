@@ -7,6 +7,7 @@ local BIMG_DIR = "extlibs/bimg"
 local BX_DIR = "extlibs/bx"
 local GLFW_DIR = "extlibs/glfw"
 local SOLOUD_DIR = "extlibs/soloud"
+local BULLET_DIR = "extlibs/bullet3"
 
 solution "Sne"
 	location(BUILD_DIR)
@@ -57,9 +58,10 @@ project "Sne"
 		path.join(BGFX_DIR, "include"),
 		path.join(BX_DIR, "include"),
 		path.join(GLFW_DIR, "include"),
-		path.join(SOLOUD_DIR, "include")
+		path.join(SOLOUD_DIR, "include"),
+		path.join(BULLET_DIR, "src"),
 	}
-	links { "bgfx", "bimg", "bx", "glfw", "soloud"}
+	links { "bgfx", "bimg", "bx", "glfw", "soloud", "BulletCollision", "BulletDynamics", "BulletInverseDynamics", "BulletSoftBody", "LinearMath"}
 	filter "system:windows"
 		links { "opengl32", "gdi32", "kernel32", "psapi" }
 	setBxCompat()
@@ -84,6 +86,7 @@ project "Sandbox"
 
 group "dependencies/bgfx"
 
+	
 project "bgfx"
 	kind "StaticLib"
 	language "C++"
@@ -170,6 +173,14 @@ project "bx"
 	filter "action:vs*"
 		defines "_CRT_SECURE_NO_WARNINGS"
 	setBxCompat()
+
+
+group "dependencies/bullet"		
+	include ("extlibs/bullet3/src/BulletInverseDynamics")
+ 	include "extlibs/bullet3/src/BulletSoftBody"
+	include "extlibs/bullet3/src/BulletDynamics"
+	include "extlibs/bullet3/src/BulletCollision"
+	include "extlibs/bullet3/src/LinearMath"
 
 group "dependencies"		
 

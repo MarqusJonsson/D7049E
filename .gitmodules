@@ -13,3 +13,6 @@
 [submodule "Sne/extlibs/soloud"]
 	path = Sne/extlibs/soloud
 	url = https://github.com/MarqusJonsson/soloud
+[submodule "Sne/extlibs/bullet3"]
+	path = Sne/extlibs/bullet3
+	url = https://github.com/osksun/bullet3.git
