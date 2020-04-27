@@ -6,6 +6,7 @@ local BGFX_DIR = "extlibs/bgfx"
 local BIMG_DIR = "extlibs/bimg"
 local BX_DIR = "extlibs/bx"
 local GLFW_DIR = "extlibs/glfw"
+local SOLOUD_DIR = "extlibs/soloud"
 
 solution "Sne"
 	location(BUILD_DIR)
@@ -55,9 +56,10 @@ project "Sne"
 	{
 		path.join(BGFX_DIR, "include"),
 		path.join(BX_DIR, "include"),
-		path.join(GLFW_DIR, "include")
+		path.join(GLFW_DIR, "include"),
+		path.join(SOLOUD_DIR, "include")
 	}
-	links { "bgfx", "bimg", "bx", "glfw" }
+	links { "bgfx", "bimg", "bx", "glfw", "soloud"}
 	filter "system:windows"
 		links { "opengl32", "gdi32", "kernel32", "psapi" }
 	setBxCompat()
@@ -198,3 +200,23 @@ project "glfw"
 
 	filter "action:vs*"
 		defines "_CRT_SECURE_NO_WARNINGS"
+		
+project "soloud"
+	kind "StaticLib"
+	language "C++"
+	files
+	{
+		path.join(SOLOUD_DIR, "src/audiosource/**.c*"),
+		path.join(SOLOUD_DIR, "src/filter/**.c*"),
+		path.join(SOLOUD_DIR, "src/core/**.c*"),
+		path.join(SOLOUD_DIR, "src/backend/null/**.c*"),
+		path.join(SOLOUD_DIR, "src/backend/winmm/**.c*")
+	}
+	
+	includedirs
+	{
+		path.join(SOLOUD_DIR, "include"),
+		path.join(SOLOUD_DIR, "src/**")
+	}
+	
+	defines { "WITH_NULL", "WITH_WINMM", "_CRT_SECURE_NO_WARNINGS" }

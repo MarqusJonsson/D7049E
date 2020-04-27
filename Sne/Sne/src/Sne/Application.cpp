@@ -14,6 +14,10 @@
 #include <GLFW/glfw3native.h>
 #include "logo.h"
 
+#include "soloud.h"
+#include "soloud_speech.h"
+#include "soloud_thread.h"
+
 static bool s_showStats = false;
 
 static void glfw_errorCallback(int error, const char* description)
@@ -37,6 +41,31 @@ Sne::Application::~Application()
 
 void Sne::Application::Run()
 {
+	/* SOLOUD TEST */
+	// Define a couple of variables
+	SoLoud::Soloud soloud;  // SoLoud engine core
+	SoLoud::Speech speech;  // A sound source (speech, in this case)
+
+	// Configure sound source
+	speech.setText("1 2 3   1 2 3   Hello world. Welcome to So-Loud.");
+
+	// initialize SoLoud.
+	soloud.init();
+
+	// Play the sound source (we could do this several times if we wanted)
+	soloud.play(speech);
+
+	// Wait until sounds have finished
+	while (soloud.getActiveVoiceCount() > 0)
+	{
+		// Still going, sleep for a bit
+		SoLoud::Thread::sleep(100);
+	}
+
+	// Clean up SoLoud
+	soloud.deinit();
+	/* END OF SOLOUD TEST */
+	/* GLFW & BGFX TEST */
 	// Create a GLFW window without an OpenGL context.
 	glfwSetErrorCallback(glfw_errorCallback);
 	if (!glfwInit())
@@ -92,5 +121,6 @@ void Sne::Application::Run()
 	}
 	bgfx::shutdown();
 	glfwTerminate();
+	/* END OF GLFW & BGFX TEST */
 	return;
 }

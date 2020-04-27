@@ -10,3 +10,6 @@
 [submodule "Sne/extlibs/bimg"]
 	path = Sne/extlibs/bimg
 	url = https://github.com/MarqusJonsson/bimg
+[submodule "Sne/extlibs/soloud"]
+	path = Sne/extlibs/soloud
+	url = https://github.com/MarqusJonsson/soloud
