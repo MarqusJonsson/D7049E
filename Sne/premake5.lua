@@ -8,6 +8,8 @@ local BX_DIR = "extlibs/bx"
 local GLFW_DIR = "extlibs/glfw"
 local SOLOUD_DIR = "extlibs/soloud"
 local BULLET_DIR = "extlibs/bullet3"
+local EASTL_DIR = "extlibs/EASTL"
+local EABase_DIR = "extlibs/EASTL/test/packages/EABase"
 
 solution "Sne"
 	location(BUILD_DIR)
@@ -60,8 +62,10 @@ project "Sne"
 		path.join(GLFW_DIR, "include"),
 		path.join(SOLOUD_DIR, "include"),
 		path.join(BULLET_DIR, "src"),
+		path.join(EASTL_DIR, "include"),
+		path.join(EASTL_DIR, "test/packages/EABase/include/Common"),
 	}
-	links { "bgfx", "bimg", "bx", "glfw", "soloud", "BulletCollision", "BulletDynamics", "BulletInverseDynamics", "BulletSoftBody", "LinearMath"}
+	links { "bgfx", "bimg", "bx", "glfw", "soloud", "BulletCollision", "BulletDynamics", "BulletInverseDynamics", "BulletSoftBody", "LinearMath", "EASTL"}
 	filter "system:windows"
 		links { "opengl32", "gdi32", "kernel32", "psapi" }
 	setBxCompat()
@@ -182,8 +186,21 @@ group "dependencies/bullet"
 	include "extlibs/bullet3/src/BulletCollision"
 	include "extlibs/bullet3/src/LinearMath"
 
-group "dependencies"		
+group "dependencies"
 
+project "EAstl"		
+	kind "StaticLib"
+	language "C"
+	
+	files
+	{
+		path.join(EASTL_DIR, "include/EASTL/**.h"),
+		path.join(EASTL_DIR, "test/packages/EABase/**.h"),
+		path.join(EASTL_DIR, "source/*.cpp"),
+	}
+	includedirs { path.join(EASTL_DIR, "include"), path.join(EASTL_DIR, "test/packages/EABase/include/Common") }
+		
+		
 project "glfw"
 	kind "StaticLib"
 	language "C"

@@ -2,6 +2,15 @@
  * Copyright 2011-2019 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
  */
+
+
+/*
+#if defined(_MSC_VER)
+ // We have little choice but to disable this warning. See the FAQ for why.
+#pragma warning(disable: 4244) // conversion from '___' to '___', possible loss of data
+#endif
+*/
+
 #include "Application.h"
 #include <stdio.h>
 #include <bx/bx.h>
@@ -18,6 +27,7 @@
 #include "soloud_speech.h"
 #include "soloud_thread.h"
 #include "btBulletDynamicsCommon.h"
+#include <EASTL/algorithm.h>
 
 static bool s_showStats = false;
 
@@ -42,9 +52,9 @@ Sne::Application::~Application()
 
 void Sne::Application::Run()
 {
+	printf("%f ===== \n",eastl::min(5.0f, 7.0f));
 	///-----includes_end-----
 
-	int i;
 	///-----initialization_start-----
 
 	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
@@ -133,7 +143,7 @@ void Sne::Application::Run()
 	/// Do some simulation
 
 	///-----stepsimulation_start-----
-	for (i = 0; i < 150; i++)
+	for (int i = 0; i < 150; i++)
 	{
 		dynamicsWorld->stepSimulation(1.f / 60.f, 10);
 
@@ -162,7 +172,7 @@ void Sne::Application::Run()
 	///-----cleanup_start-----
 
 	//remove the rigidbodies from the dynamics world and delete them
-	for (i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);

@@ -16,3 +16,6 @@
 [submodule "Sne/extlibs/bullet3"]
 	path = Sne/extlibs/bullet3
 	url = https://github.com/osksun/bullet3.git
+[submodule "Sne/extlibs/EASTL"]
+	path = Sne/extlibs/EASTL
+	url = https://github.com/osksun/EASTL.git
