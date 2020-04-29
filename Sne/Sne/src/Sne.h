@@ -2,8 +2,10 @@
 
 // For use by Sne applications
 
-#include "Sne/Application.h"
+#include "Sne/Core/Application.h"
 
 // ---Entry Point-------------
-#include "Sne/EntryPoint.h"
+#include "Sne/Core/EntryPoint.h"
 // ---------------------------
+
+#include "Sne/Core/Core.h"

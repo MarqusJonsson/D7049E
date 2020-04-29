@@ -10,10 +10,12 @@ local SOLOUD_DIR = "extlibs/soloud"
 local BULLET_DIR = "extlibs/bullet3"
 local EASTL_DIR = "extlibs/EASTL"
 local EABase_DIR = "extlibs/EASTL/test/packages/EABase"
+local SNE_DIR = "Sne"
+local SANDBOX_DIR = "Sandbox"
 
 solution "Sne"
-	location(BUILD_DIR)
-	startproject "sandbox"
+	location (BUILD_DIR)
+	startproject "Sandbox"
 	configurations { "Release", "Debug" }
 	platforms "x86_64"
 	filter "configurations:Release"
@@ -23,8 +25,6 @@ solution "Sne"
 		defines "_DEBUG"
 		optimize "Debug"
 		symbols "On"
-	filter "platforms:x86"
-		architecture "x86"
 	filter "platforms:x86_64"
 		architecture "x86_64"
 
@@ -38,6 +38,9 @@ end
 group ""	
 
 project "Sne"
+	location (SNE_DIR)
+	targetdir (BUILD_DIR .. "/bin/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
+	targetdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
@@ -71,6 +74,9 @@ project "Sne"
 	setBxCompat()
 
 project "Sandbox"
+	location(SANDBOX_DIR)
+	targetdir (BUILD_DIR .. "/bin/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
+	targetdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
