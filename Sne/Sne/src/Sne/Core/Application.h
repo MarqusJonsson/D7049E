@@ -1,18 +1,19 @@
 #pragma once
-
 #include "Core.h"
-namespace Sne {
 
-	class SNE_API Application
-	{
-	public:
-		Application();
-		virtual ~Application();
+namespace Sne
+{
+
+class SNE_API Application
+{
+public:
+	Application();
+	virtual ~Application();
 		
-		void Run();
-	};
+	void Run();
+};
 
-	// To be defined in CLIENT
-	Application* CreateApplication();
+// To be defined in CLIENT
+Application* CreateApplication();
 
 }

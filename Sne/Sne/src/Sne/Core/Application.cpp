@@ -23,11 +23,20 @@
 #include <GLFW/glfw3native.h>
 #include "logo.h"
 
-#include "soloud.h"
-#include "soloud_speech.h"
-#include "soloud_thread.h"
-#include "btBulletDynamicsCommon.h"
+#include <soloud.h>
+#include <soloud_speech.h>
+#include <soloud_thread.h>
+#include <btBulletDynamicsCommon.h>
 #include <EASTL/algorithm.h>
+#include <EASTL/vector.h>
+
+#include "../JobSystem/JobSystem.h"
+
+#include <iostream>
+#include <chrono>
+#include <EASTL/string.h>
+
+#include "EastlOverrides.h"
 
 static bool s_showStats = false;
 
@@ -50,8 +59,80 @@ Sne::Application::~Application()
 {
 }
 
+
+void Spin(float milliseconds)
+{
+	milliseconds /= 1000.0f;
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	double ms = 0;
+	while (ms < milliseconds)
+	{
+		std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+		ms = time_span.count();
+	}
+}
+
+struct timer
+{
+	eastl::string name;
+	std::chrono::high_resolution_clock::time_point start;
+
+	timer(const eastl::string& name) : name(name), start(std::chrono::high_resolution_clock::now()) {}
+	~timer()
+	{
+		auto end = std::chrono::high_resolution_clock::now();
+		std::printf("%lli\n", std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
+	}
+};
+
 void Sne::Application::Run()
 {
+	struct Data
+	{
+		float m[16];
+		void Compute(uint32_t value)
+		{
+			for (int i = 0; i < 10000; ++i)
+			{
+				m[i % 16] += float(value + i);
+			}
+		}
+	};
+	uint32_t dataCount = 1000000;
+
+	// Loop test:
+	{
+		Data* dataSet = new Data[dataCount];
+		{
+			auto t = timer("loop test: ");
+
+			for (uint32_t i = 0; i < dataCount; ++i)
+			{
+				dataSet[i].Compute(i);
+			}
+		}
+		delete[] dataSet;
+	}
+
+	JobSystem::Initialize();
+
+	JobSystem::context ctx;
+	// Dispatch test:
+	{
+		Data* dataSet = new Data[dataCount];
+		{
+			auto t = timer("Dispatch() test: ");
+
+			const uint32_t groupSize = 1000;
+			JobSystem::Dispatch(ctx, dataCount, groupSize, [&dataSet](JobDispatchArgs args) {
+				dataSet[args.jobIndex].Compute(1);
+			});
+			JobSystem::Wait(ctx);
+		}
+		delete[] dataSet;
+	}
+	/*
 	printf("%f ===== \n",eastl::min(5.0f, 7.0f));
 	///-----includes_end-----
 
@@ -291,6 +372,7 @@ void Sne::Application::Run()
 	bgfx::shutdown();
 	glfwTerminate();
 	//END OF GLFW & BGFX TEST
+	*/
 	return;
 	
 }
