@@ -28,7 +28,14 @@
 #include "soloud_thread.h"
 #include "btBulletDynamicsCommon.h"
 #include <EASTL/algorithm.h>
+#include "EastlOverides.h"
+/*#include "../ECS/Entity.h"
+#include "../ECS/Component.h"
+#include "../ECS/Manager.h"
+#include "../ECS/Components/PositionComponent.h"*/
 
+#include "../ECS/game.h"
+#include <iostream>
 static bool s_showStats = false;
 
 static void glfw_errorCallback(int error, const char* description)
@@ -50,10 +57,29 @@ Sne::Application::~Application()
 {
 }
 
+
 void Sne::Application::Run()
 {
-	printf("%f ===== \n",eastl::min(5.0f, 7.0f));
-	///-----includes_end-----
+	
+	int time = 0;
+	game_initialize();
+	for (int i = 0; i < 10000; i++) {
+		
+		game_update(time, 1);
+		time++;
+	}
+	
+	/*Manager manager;
+	Entity& player (manager.addEntity());
+	player.addComponent<PositionComponent>();
+	std::cout << player.getComponent<PositionComponent>().x() << " Before update \n";
+	manager.update();
+	player.update();
+	std::cout << player.getComponent<PositionComponent>().x() << " After update \n";*/
+
+
+	//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
+	/*///-----includes_end-----
 
 	///-----initialization_start-----
 
@@ -216,7 +242,7 @@ void Sne::Application::Run()
 	SoLoud::Speech speech;  // A sound source (speech, in this case)
 
 	// Configure sound source
-	speech.setText("1 2 3   1 2 3   Hello world. Welcome to So-Loud.");
+	speech.setText("7 7 7   7 7 1   Hello world. Welcome to Sne.");
 
 	// initialize SoLoud.
 	soloud.init();
@@ -291,6 +317,8 @@ void Sne::Application::Run()
 	bgfx::shutdown();
 	glfwTerminate();
 	//END OF GLFW & BGFX TEST
-	return;
+	return;*/
 	
 }
+
+
