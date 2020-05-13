@@ -6,3 +6,4 @@
 **.vcxproj.user
 # Build folder
 Sne/build/**
+Sne/Sandbox/obj/**

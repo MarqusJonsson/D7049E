@@ -29,13 +29,20 @@
 #include "btBulletDynamicsCommon.h"
 #include <EASTL/algorithm.h>
 #include "EastlOverides.h"
-/*#include "../ECS/Entity.h"
-#include "../ECS/Component.h"
-#include "../ECS/Manager.h"
-#include "../ECS/Components/PositionComponent.h"*/
 
-#include "../ECS/game.h"
+
+#include "../ECS/BaseSystem.h"
+#include "../ECS/ComponentManager.h"
+#include "../ECS/Entity.h"
+#include "../ECS/EntityManager.h"
+#include "../ECS/IComponentArray.h"
+#include "../ECS/SystemManager.h"
+#include "../ECS//Components/HealthComponent.h"
+
 #include <iostream>
+
+#include "../ECS/HealthComponentManager.h"
+
 static bool s_showStats = false;
 
 static void glfw_errorCallback(int error, const char* description)
@@ -60,26 +67,26 @@ Sne::Application::~Application()
 
 void Sne::Application::Run()
 {
-	
-	int time = 0;
+	ComponentManager componentManager = ComponentManager();
+	HealthComponent health = HealthComponent();
+	componentManager.RegisterComponent<HealthComponent>();
+	EntityManager entityManager = EntityManager();
+	Entity player = entityManager.CreateEntity();
+	componentManager.AddComponent(player,health);
+	//RenderSystem renderSystem = systemManager.RegisterSystem<RenderSystem>();
+	/*int time = 0;
 	game_initialize();
 	for (int i = 0; i < 10000; i++) {
 		
 		game_update(time, 1);
 		time++;
-	}
+	}*/
 	
-	/*Manager manager;
-	Entity& player (manager.addEntity());
-	player.addComponent<PositionComponent>();
-	std::cout << player.getComponent<PositionComponent>().x() << " Before update \n";
-	manager.update();
-	player.update();
-	std::cout << player.getComponent<PositionComponent>().x() << " After update \n";*/
 
 
-	//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
-	/*///-----includes_end-----
+
+	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
+	///-----includes_end-----
 
 	///-----initialization_start-----
 
