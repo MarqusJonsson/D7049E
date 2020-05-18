@@ -12,12 +12,17 @@ local EASTL_DIR = "extlibs/EASTL"
 local EABase_DIR = "extlibs/EASTL/test/packages/EABase"
 local SNE_DIR = "Sne"
 local SANDBOX_DIR = "Sandbox"
+local NOMADTASKS_DIR = "extlibs/NomadTasks"
+local OPTICK_DIR = "extlibs/NomadTasks/code/vendor/optick"
 
-solution "Sne"
+workspace "Sne"
 	location (BUILD_DIR)
-	startproject "Sandbox"
 	configurations { "Release", "Debug" }
 	platforms "x86_64"
+	cppdialect "c++17"
+	startproject "Sandbox"
+	flags "MultiProcessorCompile"
+	vectorextensions "SSE4.1"
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -40,7 +45,7 @@ group ""
 project "Sne"
 	location (SNE_DIR)
 	targetdir (BUILD_DIR .. "/bin/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
-	targetdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
+	objdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
@@ -55,7 +60,10 @@ project "Sne"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		--"GLFW_INCLUDE_NONE",
-		"SNE_BUILD_DLL"
+		"SNE_BUILD_DLL",
+		"WIN32_LEAN_AND_MEAN",
+		"PUGIXML_WCHAR_MODE",
+		"FMT_HEADER_ONLY"
 	}
 	
 	includedirs
@@ -67,8 +75,32 @@ project "Sne"
 		path.join(BULLET_DIR, "src"),
 		path.join(EASTL_DIR, "include"),
 		path.join(EASTL_DIR, "test/packages/EABase/include/Common"),
+		path.join(NOMADTASKS_DIR, "code/fiber/include"),
+		path.join(OPTICK_DIR, "src"),
 	}
-	links { "bgfx", "bimg", "bx", "glfw", "soloud", "BulletCollision", "BulletDynamics", "BulletInverseDynamics", "BulletSoftBody", "LinearMath", "EASTL"}
+	links {
+		"bgfx",
+		"bimg",
+		"bx",
+		"glfw",
+		"soloud",
+		"BulletCollision",
+		"BulletDynamics",
+		"BulletInverseDynamics",
+		"BulletSoftBody",
+		"LinearMath",
+		"EASTL",
+		"nomad-fiber"
+	}
+	
+	--filter "configurations:Debug or Release"
+	--	defines { "USE_OPTICK=1" }
+	--	links { "optick" }
+	--filter "configurations:Shipping"
+	--	defines { "USE_OPTICK=0", "SHIPPING" }
+	
+	filter {}
+	
 	filter "system:windows"
 		links { "opengl32", "gdi32", "kernel32", "psapi" }
 	setBxCompat()
@@ -76,7 +108,7 @@ project "Sne"
 project "Sandbox"
 	location(SANDBOX_DIR)
 	targetdir (BUILD_DIR .. "/bin/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
-	targetdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
+	objdir (BUILD_DIR .. "/obj/" .. "%{cfg.architecture}/%{cfg.buildcfg}")
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -96,7 +128,6 @@ project "Sandbox"
 
 group "dependencies/bgfx"
 
-	
 project "bgfx"
 	kind "StaticLib"
 	language "C++"
@@ -191,6 +222,15 @@ group "dependencies/bullet"
 	include "extlibs/bullet3/src/BulletDynamics"
 	include "extlibs/bullet3/src/BulletCollision"
 	include "extlibs/bullet3/src/LinearMath"
+
+group "dependencies/NomadTasks"
+	include "extlibs/NomadTasks/code/fiber"
+	--include "code/threadjob"
+	--include "test/fiber-main-test"
+	--include "test/threadjob-main-test"
+
+group "dependencies/optick"
+	include "extlibs/NomadTasks/code/vendor/optick.lua"
 
 group "dependencies"
 
