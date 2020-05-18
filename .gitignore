@@ -7,3 +7,4 @@
 # Build folder
 Sne/build/**
 Sne/Sandbox/obj/**
+Sne/Sne/obj/**

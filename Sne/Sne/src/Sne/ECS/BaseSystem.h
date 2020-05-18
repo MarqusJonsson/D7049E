@@ -10,7 +10,7 @@ class BaseSystem
 {
 public:
 	eastl::set<Entity> entities;
-	EventBus* eventBus; //eastl::unique_ptr<EventBus> eventBus;
-	eastl::unique_ptr<ComponentManager> componentManager;
-
+	//eastl::unique_ptr<EntityManager> entityManager;
+	ComponentManager componentManager;
+	//eastl::unique_ptr<SystemManager> systemManager;
 };

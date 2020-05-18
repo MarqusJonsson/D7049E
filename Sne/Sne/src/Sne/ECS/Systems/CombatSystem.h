@@ -7,15 +7,19 @@
 class CombatSystem : public BaseSystem 
 {
 public:
-    void init() 
+    CombatSystem(ComponentManager componentManager)
+    {
+        this->componentManager = componentManager;
+    }
+    void EventSubscribe(EventBus* eventBus) 
     {
         eventBus->subscribe(this, &CombatSystem::DamageEvent);
     }
 
     void DamageEvent(DamageEvent* damageEvent) 
     {
-            
-        HealthComponent& healthComponent = componentManager->GetComponent<HealthComponent>(damageEvent->entity);
+        printf("damage event triggered \n");
+        HealthComponent& healthComponent = componentManager.GetComponent<HealthComponent>(damageEvent->entity);
         healthComponent.health -= 1;
     }
 };
