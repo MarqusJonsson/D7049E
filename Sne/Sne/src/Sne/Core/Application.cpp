@@ -32,16 +32,16 @@
 
 // Entity Component System
 #include "../ECS/BaseSystem.h"
-#include "../ECS/ComponentManager.h"
 #include "../ECS/Entity.h"
-#include "../ECS/EntityManager.h"
 #include "../ECS/IComponentArray.h"
-#include "../ECS/SystemManager.h"
 #include "../ECS//Components/HealthComponent.h"
-#include "../ECS/HealthComponentManager.h"
-#include "../ECS/SystemManager.h"
+//#include "../ECS/ComponentManager.h"
+//#include "../ECS/SystemManager.h"
+//#include "../ECS/EntityManager.h"
 #include "../ECS/Systems/MouseSystem.h"
 #include "../ECS/Systems/CombatSystem.h"
+#include "../ECS/Components/PositionComponent.h"
+#include "../ECS/ManagerManager.h"
 
 // Event System
 #include "../EventSystem/EventBus.h"
@@ -93,41 +93,38 @@ void Sne::Application::Run()
 
 	//Events
 	EventBus* eventBus = new EventBus();
+	ManagerManager managerManager = ManagerManager();
 
-	EntityManager entityManager = EntityManager();
+	/*EntityManager entityManager = EntityManager();
 	ComponentManager componentManager =  ComponentManager();
-	SystemManager systemManager = SystemManager();
+	SystemManager systemManager = SystemManager();*/
 
 	//Entities
-	Entity player = entityManager.CreateEntity();
+	Entity player = managerManager.CreateEntity();
 	//Components
 	HealthComponent playerHealthComponent = HealthComponent();
-	playerHealthComponent.Initialize(100, 100);
-	componentManager.RegisterComponent<HealthComponent>();
-	componentManager.AddComponent(player, playerHealthComponent);
+	playerHealthComponent.Init(100, 100);
+	managerManager.RegisterComponent<HealthComponent>();
+	PositionComponent playerPositionComponent = PositionComponent();
+	playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
+	managerManager.RegisterComponent<PositionComponent>();
+
+	managerManager.AddComponent(player, playerHealthComponent);
+	managerManager.AddComponent(player, playerPositionComponent);
 	//Systems
 	MouseSystem mouseSystem = MouseSystem();
-	CombatSystem combatSystem = CombatSystem(componentManager);
-
-	systemManager.RegisterSystem<MouseSystem>();
-	//systemManager.RegisterSystem<CombatSystem>();
+	CombatSystem combatSystem = CombatSystem(managerManager);
+	
+	managerManager.RegisterSystem<MouseSystem>();
+	managerManager.RegisterSystem<CombatSystem>();
 
 	mouseSystem.EventSubscribe(eventBus);
 	combatSystem.EventSubscribe(eventBus);
 
-	printf("%i player hp before \n", componentManager.GetComponent<HealthComponent>(player).health);
+	printf("%i player hp before \n", managerManager.GetComponent<HealthComponent>(player).health);
 	eventBus->publish(new DamageEvent(player));
-
-
-	/*int time = 0;
-	game_initialize();
-	for (int i = 0; i < 10000; i++) {
-		
-		game_update(time, 1);
-		time++;
-	}*/
-	
-
+	printf("%i player hp after \n", managerManager.GetComponent<HealthComponent>(player).health);
+	//managerManager.DestroyEntity(player);
 
 
 	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
@@ -324,7 +321,6 @@ void Sne::Application::Run()
 	if (!window)
 		return;
 	eventBus->publish(new MouseClickEvent(player, window));
-	printf("%i player hp after \n", componentManager.GetComponent<HealthComponent>(player).health);
 
 	glfwSetKeyCallback(window, glfw_keyCallback);
 	glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);

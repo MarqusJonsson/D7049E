@@ -40,7 +40,6 @@ public:
 		for (const eastl::pair<const char* const, eastl::shared_ptr <BaseSystem>>& pair : systems)
 		{
 			
-			//auto const& system = pair.second;
 			const eastl::shared_ptr <BaseSystem>& system = pair.second;
 
 			system->entities.erase(entity);
