@@ -19,3 +19,6 @@
 [submodule "Sne/extlibs/EASTL"]
 	path = Sne/extlibs/EASTL
 	url = https://github.com/osksun/EASTL.git
+[submodule "Sne/extlibs/NomadTasks"]
+	path = Sne/extlibs/NomadTasks
+	url = https://github.com/MarqusJonsson/NomadTasks

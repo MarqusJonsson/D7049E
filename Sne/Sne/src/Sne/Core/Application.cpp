@@ -34,8 +34,15 @@
 #include "../ECS/Manager.h"
 #include "../ECS/Components/PositionComponent.h"*/
 
+#include <fiber/Counter.h>
+#include <fiber/List.h>
+#include <fiber/Manager.h>
+#include <fiber/Queue.h>
+
 #include "../ECS/game.h"
 #include <iostream>
+#include <optick.h>
+
 static bool s_showStats = false;
 
 static void glfw_errorCallback(int error, const char* description)
@@ -58,16 +65,9 @@ Sne::Application::~Application()
 }
 
 
+
 void Sne::Application::Run()
 {
-	
-	int time = 0;
-	game_initialize();
-	for (int i = 0; i < 10000; i++) {
-		
-		game_update(time, 1);
-		time++;
-	}
 	
 	/*Manager manager;
 	Entity& player (manager.addEntity());
