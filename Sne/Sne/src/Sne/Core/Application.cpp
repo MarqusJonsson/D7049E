@@ -29,19 +29,27 @@
 #include "btBulletDynamicsCommon.h"
 #include <EASTL/algorithm.h>
 #include "EastlOverides.h"
-/*#include "../ECS/Entity.h"
-#include "../ECS/Component.h"
-#include "../ECS/Manager.h"
-#include "../ECS/Components/PositionComponent.h"*/
 
-#include <fiber/Counter.h>
-#include <fiber/List.h>
-#include <fiber/Manager.h>
-#include <fiber/Queue.h>
+// Entity Component System
+#include "../ECS/BaseSystem.h"
+#include "../ECS/ComponentManager.h"
+#include "../ECS/Entity.h"
+#include "../ECS/EntityManager.h"
+#include "../ECS/IComponentArray.h"
+#include "../ECS/SystemManager.h"
+#include "../ECS//Components/HealthComponent.h"
+#include "../ECS/HealthComponentManager.h"
+#include "../ECS/SystemManager.h"
+#include "../ECS/Systems/MouseSystem.h"
+#include "../ECS/Systems/CombatSystem.h"
 
-#include "../ECS/game.h"
+// Event System
+#include "../EventSystem/EventBus.h"
+#include "../EventSystem/Events/MouseClickEvent.h"
+#include "../EventSystem/Events/DamageEvent.h"
+#include "../EventSystem/MemberFunctionHandler.h"
 #include <iostream>
-#include <optick.h>
+
 
 static bool s_showStats = false;
 
@@ -56,6 +64,21 @@ static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		s_showStats = !s_showStats;
 }
 
+static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS))
+	{
+		int once = 0;
+		printf("Left mouse button \n");
+		if (once == 0)
+		{
+			once = 1;
+		}
+	}
+}
+
+
+
 Sne::Application::Application()
 {
 }
@@ -65,21 +88,50 @@ Sne::Application::~Application()
 }
 
 
-
 void Sne::Application::Run()
 {
+
+	//Events
+	EventBus* eventBus = new EventBus();
+
+	EntityManager entityManager = EntityManager();
+	ComponentManager componentManager =  ComponentManager();
+	SystemManager systemManager = SystemManager();
+
+	//Entities
+	Entity player = entityManager.CreateEntity();
+	//Components
+	HealthComponent playerHealthComponent = HealthComponent();
+	playerHealthComponent.Initialize(100, 100);
+	componentManager.RegisterComponent<HealthComponent>();
+	componentManager.AddComponent(player, playerHealthComponent);
+	//Systems
+	MouseSystem mouseSystem = MouseSystem();
+	CombatSystem combatSystem = CombatSystem(componentManager);
+
+	systemManager.RegisterSystem<MouseSystem>();
+	//systemManager.RegisterSystem<CombatSystem>();
+
+	mouseSystem.EventSubscribe(eventBus);
+	combatSystem.EventSubscribe(eventBus);
+
+	printf("%i player hp before \n", componentManager.GetComponent<HealthComponent>(player).health);
+	eventBus->publish(new DamageEvent(player));
+
+
+	/*int time = 0;
+	game_initialize();
+	for (int i = 0; i < 10000; i++) {
+		
+		game_update(time, 1);
+		time++;
+	}*/
 	
-	/*Manager manager;
-	Entity& player (manager.addEntity());
-	player.addComponent<PositionComponent>();
-	std::cout << player.getComponent<PositionComponent>().x() << " Before update \n";
-	manager.update();
-	player.update();
-	std::cout << player.getComponent<PositionComponent>().x() << " After update \n";*/
 
 
-	//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
-	/*///-----includes_end-----
+
+	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
+	///-----includes_end-----
 
 	///-----initialization_start-----
 
@@ -260,8 +312,10 @@ void Sne::Application::Run()
 	// Clean up SoLoud
 	soloud.deinit();
 	// END OF SOLOUD TEST
+	*/
 	// GLFW & BGFX TEST
 	// Create a GLFW window without an OpenGL context.
+
 	glfwSetErrorCallback(glfw_errorCallback);
 	if (!glfwInit())
 		return;
@@ -269,7 +323,11 @@ void Sne::Application::Run()
 	GLFWwindow* window = glfwCreateWindow(1024, 768, "helloworld", nullptr, nullptr);
 	if (!window)
 		return;
+	eventBus->publish(new MouseClickEvent(player, window));
+	printf("%i player hp after \n", componentManager.GetComponent<HealthComponent>(player).health);
+
 	glfwSetKeyCallback(window, glfw_keyCallback);
+	glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);
 	// Call bgfx::renderFrame before bgfx::init to signal to bgfx not to create a render thread.
 	// Most graphics APIs must be used on the same thread that created the window.
 	bgfx::renderFrame();
@@ -317,7 +375,9 @@ void Sne::Application::Run()
 	bgfx::shutdown();
 	glfwTerminate();
 	//END OF GLFW & BGFX TEST
-	return;*/
+
+
+	return;
 	
 }
 
