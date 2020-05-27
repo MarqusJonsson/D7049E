@@ -223,14 +223,14 @@ group "dependencies/bullet"
 	include "extlibs/bullet3/src/BulletCollision"
 	include "extlibs/bullet3/src/LinearMath"
 
-group "dependencies/NomadTasks"
-	include "extlibs/NomadTasks/code/fiber"
+--group "dependencies/NomadTasks"
+	--include "extlibs/NomadTasks/code/fiber"
 	--include "code/threadjob"
 	--include "test/fiber-main-test"
 	--include "test/threadjob-main-test"
 
-group "dependencies/optick"
-	include "extlibs/NomadTasks/code/vendor/optick.lua"
+--group "dependencies/optick"
+	--include "extlibs/NomadTasks/code/vendor/optick.lua"
 
 group "dependencies"
 
