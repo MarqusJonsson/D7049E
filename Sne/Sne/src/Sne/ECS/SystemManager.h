@@ -17,8 +17,8 @@ public:
 		assert(systems.find(typeName) == systems.end() && "Registering system more than once.");
 
 		// Create a pointer to the system and return it so it can be used externally
-		auto system = eastl::make_shared<T>();
-		systems.insert({ typeName, system }); // sketchy function needs to be looked at 2020-05-08
+		eastl::shared_ptr system = eastl::make_shared<T>();
+		systems.insert({ typeName, system });
 		return system;
 	}
 

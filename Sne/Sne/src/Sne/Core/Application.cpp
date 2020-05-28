@@ -92,32 +92,34 @@ void Sne::Application::Run()
 	//Events
 	EventBus* eventBus = new EventBus();
 	//Managers
-	ManagerManager managerManager = ManagerManager();
+	eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
 	//Entities
-	Entity player = managerManager.CreateEntity();
+	Entity player = managerManager->CreateEntity();
 	//Components
 	HealthComponent playerHealthComponent = HealthComponent();
 	playerHealthComponent.Init(100, 100);
-	managerManager.RegisterComponent<HealthComponent>();
+	managerManager->RegisterComponent<HealthComponent>();
 	PositionComponent playerPositionComponent = PositionComponent();
-	managerManager.RegisterComponent<PositionComponent>();
+	managerManager->RegisterComponent<PositionComponent>();
 	playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
 
-	managerManager.AddComponent(player, playerHealthComponent);
-	managerManager.AddComponent(player, playerPositionComponent);
+	managerManager->AddComponent(player, playerHealthComponent);
+	managerManager->AddComponent(player, playerPositionComponent);
 	//Systems
-	MouseSystem mouseSystem = MouseSystem();
-	CombatSystem combatSystem = CombatSystem(managerManager);
-	
-	managerManager.RegisterSystem<MouseSystem>();
-	managerManager.RegisterSystem<CombatSystem>();
+	Signature combatSystemSignature;
+	combatSystemSignature.set(managerManager->GetComponentType<HealthComponent>());
+	eastl::shared_ptr mouseSystem = managerManager->RegisterSystem<MouseSystem>();
+	eastl::shared_ptr combatSystem = managerManager->RegisterSystem<CombatSystem>();
+	combatSystem->setManagerManager(managerManager);
+	managerManager->SetSystemSignature<CombatSystem>(combatSystemSignature);
+	mouseSystem->EventSubscribe(eventBus);
+	combatSystem->EventSubscribe(eventBus);
 
-	mouseSystem.EventSubscribe(eventBus);
-	combatSystem.EventSubscribe(eventBus);
 
-	printf("%i player hp before \n", managerManager.GetComponent<HealthComponent>(player).health);
+
+	printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
 	eventBus->publish(new DamageEvent(player));
-	printf("%i player hp after \n", managerManager.GetComponent<HealthComponent>(player).health);
+	printf("%i player hp after \n", managerManager->GetComponent<HealthComponent>(player).health);
 	//managerManager.DestroyEntity(player);
 	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
 	///-----includes_end-----

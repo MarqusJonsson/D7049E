@@ -12,7 +12,7 @@ public:
     {
     }
 
-    CombatSystem(ManagerManager managerManager)
+   /* CombatSystem(ManagerManager managerManager)
     {
         this->managerManager = managerManager;
     }
@@ -20,7 +20,8 @@ public:
     void Init(ManagerManager managerManager)
     {
         this->managerManager = managerManager;
-    }
+    }*/
+
     void EventSubscribe(EventBus* eventBus) 
     {
         eventBus->subscribe(this, &CombatSystem::DamageEvent);
@@ -29,16 +30,21 @@ public:
     void DamageEvent(DamageEvent* damageEvent) 
     {
         printf("damage event triggered \n");
-        HealthComponent& healthComponent = managerManager.GetComponent<HealthComponent>(damageEvent->entity);
+        HealthComponent& healthComponent = managerManager->GetComponent<HealthComponent>(damageEvent->entity);
         if (healthComponent.health - 1 <= 0) 
         {
-            managerManager.DestroyEntity(damageEvent->entity);
+            managerManager->DestroyEntity(damageEvent->entity);
         }
         else
         {
             healthComponent.health -= 1;
         }
     }
+
+    void setManagerManager(eastl::shared_ptr<ManagerManager> managerManager)
+    {
+        this->managerManager = managerManager;
+    }
 private:
-    ManagerManager managerManager;
+    eastl::shared_ptr<ManagerManager> managerManager;
 };

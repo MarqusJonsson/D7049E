@@ -8,11 +8,9 @@ class ManagerManager
 {
 public:
 	/*void Init()
-	{
-		// Create pointers to each manager
-		componentManager = eastl::make_unique<ComponentManager>();
-		entityManager = eastl::make_unique<EntityManager>();
-		systemManager = eastl::make_unique<SystemManager>();
+	{	eastl::unique_ptr<EntityManager> entityManager = eastl::make_unique<EntityManager>();
+		eastl::unique_ptr<ComponentManager> componentManager = eastl::make_unique<ComponentManager>();
+		eastl::unique_ptr<SystemManager> systemManager = eastl::make_unique<SystemManager>();
 	}*/
 
 
