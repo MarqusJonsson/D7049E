@@ -14,6 +14,7 @@ local SNE_DIR = "Sne"
 local SANDBOX_DIR = "Sandbox"
 local NOMADTASKS_DIR = "extlibs/NomadTasks"
 local OPTICK_DIR = "extlibs/NomadTasks/code/vendor/optick"
+local GLM_DIR = "extlibs/glm"
 
 workspace "Sne"
 	location (BUILD_DIR)
@@ -77,6 +78,7 @@ project "Sne"
 		path.join(EASTL_DIR, "test/packages/EABase/include/Common"),
 		path.join(NOMADTASKS_DIR, "code/fiber/include"),
 		path.join(OPTICK_DIR, "src"),
+		path.join(GLM_DIR, "glm"),
 	}
 	links {
 		"bgfx",
@@ -90,7 +92,7 @@ project "Sne"
 		"BulletSoftBody",
 		"LinearMath",
 		"EASTL",
-		"nomad-fiber"
+		"nomad-fiber",
 	}
 	
 	--filter "configurations:Debug or Release"

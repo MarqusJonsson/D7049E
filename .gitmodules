@@ -22,3 +22,6 @@
 [submodule "Sne/extlibs/NomadTasks"]
 	path = Sne/extlibs/NomadTasks
 	url = https://github.com/MarqusJonsson/NomadTasks
+[submodule "Sne/extlibs/glm"]
+	path = Sne/extlibs/glm
+	url = https://github.com/osksun/glm

@@ -29,7 +29,6 @@
 #include "btBulletDynamicsCommon.h"
 #include <EASTL/algorithm.h>
 #include "EastlOverides.h"
-
 // Entity Component System
 #include "../ECS/BaseSystem.h"
 #include "../ECS/Entity.h"
@@ -47,6 +46,7 @@
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
 #include <iostream>
+
 
 
 static bool s_showStats = false;
@@ -91,12 +91,8 @@ void Sne::Application::Run()
 
 	//Events
 	EventBus* eventBus = new EventBus();
+	//Managers
 	ManagerManager managerManager = ManagerManager();
-
-	/*EntityManager entityManager = EntityManager();
-	ComponentManager componentManager =  ComponentManager();
-	SystemManager systemManager = SystemManager();*/
-
 	//Entities
 	Entity player = managerManager.CreateEntity();
 	//Components
@@ -104,8 +100,8 @@ void Sne::Application::Run()
 	playerHealthComponent.Init(100, 100);
 	managerManager.RegisterComponent<HealthComponent>();
 	PositionComponent playerPositionComponent = PositionComponent();
-	playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
 	managerManager.RegisterComponent<PositionComponent>();
+	playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
 
 	managerManager.AddComponent(player, playerHealthComponent);
 	managerManager.AddComponent(player, playerPositionComponent);
@@ -123,8 +119,6 @@ void Sne::Application::Run()
 	eventBus->publish(new DamageEvent(player));
 	printf("%i player hp after \n", managerManager.GetComponent<HealthComponent>(player).health);
 	//managerManager.DestroyEntity(player);
-
-
 	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
 	///-----includes_end-----
 
