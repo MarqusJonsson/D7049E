@@ -46,9 +46,14 @@
 #include "../EventSystem/Events/KeyClickEvent.h"
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
-#include <iostream>
-
-
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+// IMGUI
+#include <bx/uint32_t.h>
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_win32.h"
 /*class WindowClass
 {
 public: 	   
@@ -93,9 +98,9 @@ static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int acti
 static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
-	if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS))
+	if (action == GLFW_PRESS)
 	{
-		eventBus->publish(new MouseClickEvent());
+		eventBus->publish(new MouseClickEvent(button));
 	}
 }
 
@@ -112,7 +117,6 @@ Sne::Application::~Application()
 
 void Sne::Application::Run()
 {
-
 	//Events
 	EventBus* eventBus = new EventBus();
 	//Managers
@@ -139,12 +143,12 @@ void Sne::Application::Run()
 	mouseSystem->EventSubscribe(eventBus);
 	combatSystem->EventSubscribe(eventBus);
 
-
-
+	//ImGui::CreateContext();
 	printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
 	eventBus->publish(new DamageEvent(player));
 	printf("%i player hp after \n", managerManager->GetComponent<HealthComponent>(player).health);
-	//managerManager.DestroyEntity(player);
+	//managerManager->DestroyEntity(player);
+
 	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
 	///-----includes_end-----
 
@@ -339,7 +343,10 @@ void Sne::Application::Run()
 	glfwSetWindowUserPointer(window, eventBus);
 	if (!window)
 		return;
-
+	// Setup Dear ImGui binding
+	//imguiCreate();
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
 	glfwSetKeyCallback(window, glfw_keyCallback);
 	glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);
 	// Call bgfx::renderFrame before bgfx::init to signal to bgfx not to create a render thread.
@@ -347,18 +354,34 @@ void Sne::Application::Run()
 	bgfx::renderFrame();
 	// Initialize bgfx using the native window handle and window resolution.
 	bgfx::Init init;
+
+
+
 #if BX_PLATFORM_WINDOWS
 	init.platformData.nwh = glfwGetWin32Window(window);
+
 #endif
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	init.resolution.width = (uint32_t)width;
 	init.resolution.height = (uint32_t)height;
 	init.resolution.reset = BGFX_RESET_VSYNC;
+
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	//ImGui_ImplWin32_Init(init.platformData.nwh);
+	//ImGui_ImplDX11_Init(this->device.Get(), this->deviceContext.Get());
+	// Setup Platform/Renderer bindings
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
 	if (!bgfx::init(init))
 		return;
 	// Set view 0 to the same dimensions as the window and to clear the color buffer.
 	const bgfx::ViewId kClearView = 0;
+
 	bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR);
 	bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
 	while (!glfwWindowShouldClose(window)) {

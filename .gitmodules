@@ -25,3 +25,6 @@
 [submodule "Sne/extlibs/glm"]
 	path = Sne/extlibs/glm
 	url = https://github.com/osksun/glm
+[submodule "Sne/extlibs/imgui"]
+	path = Sne/extlibs/imgui
+	url = https://github.com/osksun/imgui.git

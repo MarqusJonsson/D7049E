@@ -1,5 +1,4 @@
 #pragma once
-#include "ComponentArray.h"
 template<typename T>
 class ComponentArray : public IComponentArray
 {

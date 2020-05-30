@@ -22,14 +22,14 @@ public:
     {
 
         //GLFWwindow* window = mouseClickEvent->getGLFWwindow();
-        printf("mouseClickEvent in InputSystem \n");
+        printf("Mouse button = %i in InputSystem\n", mouseClickEvent->button);
         //glfwSetMouseButtonCallback(mouseClickEvent->getGLFWwindow(), glfw_mouseInputCallback);
 
     }
 
     void keyClickEvent(KeyClickEvent* keyClickEvent)
     {
-        printf("key = %i in InputSystem \n", keyClickEvent->key);
+        printf("Keyboard key = %i in InputSystem \n", keyClickEvent->key);
 
     }
 
