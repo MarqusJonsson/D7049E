@@ -35,7 +35,7 @@
 #include "../ECS/IComponentArray.h"
 #include "../ECS/ComponentArray.h"
 #include "../ECS//Components/HealthComponent.h"
-#include "../ECS/Systems/MouseSystem.h"
+#include "../ECS/Systems/InputSystem.h"
 #include "../ECS/Systems/CombatSystem.h"
 #include "../ECS/Components/PositionComponent.h"
 #include "../ECS/ManagerManager.h"
@@ -43,6 +43,7 @@
 // Event System
 #include "../EventSystem/EventBus.h"
 #include "../EventSystem/Events/MouseClickEvent.h"
+#include "../EventSystem/Events/KeyClickEvent.h"
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
 #include <iostream>
@@ -80,6 +81,11 @@ static void glfw_errorCallback(int error, const char* description)
 
 static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS)
+	{
+		eventBus->publish(new KeyClickEvent(key));
+	}
 	if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
 		s_showStats = !s_showStats;
 }
@@ -126,7 +132,7 @@ void Sne::Application::Run()
 	//Systems
 	Signature combatSystemSignature;
 	combatSystemSignature.set(managerManager->GetComponentType<HealthComponent>());
-	eastl::shared_ptr mouseSystem = managerManager->RegisterSystem<MouseSystem>();
+	eastl::shared_ptr mouseSystem = managerManager->RegisterSystem<InputSystem>();
 	eastl::shared_ptr combatSystem = managerManager->RegisterSystem<CombatSystem>();
 	combatSystem->setManagerManager(managerManager);
 	managerManager->SetSystemSignature<CombatSystem>(combatSystemSignature);
