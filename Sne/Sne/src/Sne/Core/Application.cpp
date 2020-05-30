@@ -48,7 +48,29 @@
 #include <iostream>
 
 
+/*class WindowClass
+{
+public: 	   
+	WindowClass()
+	{
 
+		window = glfwCreateWindow(1024, 768, "helloworld", nullptr, nullptr);
+		glfwSetWindowUserPointer(window, this);
+		glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);
+	}
+
+	~WindowClass()
+	{
+		glfwDestroyWindow(window);
+	}
+
+	virtual void mouseInputCallback(int key, int scancode, int actions, int mods)
+	{
+		
+	}
+private:
+	GLFWwindow* window;
+};*/
 static bool s_showStats = false;
 
 static void glfw_errorCallback(int error, const char* description)
@@ -64,14 +86,10 @@ static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int acti
 
 static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
 {
+	EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
 	if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS))
 	{
-		int once = 0;
-		printf("Left mouse button \n");
-		if (once == 0)
-		{
-			once = 1;
-		}
+		eventBus->publish(new MouseClickEvent());
 	}
 }
 
@@ -312,9 +330,9 @@ void Sne::Application::Run()
 		return;
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	GLFWwindow* window = glfwCreateWindow(1024, 768, "helloworld", nullptr, nullptr);
+	glfwSetWindowUserPointer(window, eventBus);
 	if (!window)
 		return;
-	eventBus->publish(new MouseClickEvent(player, window));
 
 	glfwSetKeyCallback(window, glfw_keyCallback);
 	glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);

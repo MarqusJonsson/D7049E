@@ -11,6 +11,11 @@ struct MouseClickEvent : public Event
 		printf("MouseClickEvent created \n");
 	}
 
+	MouseClickEvent() 
+	{
+
+	}
+
 	GLFWwindow* getGLFWwindow() 
 	{
 		return window;

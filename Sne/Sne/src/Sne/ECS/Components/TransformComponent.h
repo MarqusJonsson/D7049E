@@ -10,6 +10,6 @@ public:
 
 	void Init()
 	{
-		M = glm::mat4{ 1.0f };
+		M = glm::mat4{1.0f};
 	}
 };
