@@ -53,7 +53,8 @@ project "Sne"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/**.bin"
 	}
 	
 	defines 
