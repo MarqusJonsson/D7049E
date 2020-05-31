@@ -8,6 +8,10 @@ Visual Studio Community 2019
 
 https://visualstudio.microsoft.com/downloads/
 
+Vulkan SDK
+
+https://www.lunarg.com/vulkan-sdk/
+
 Premake-5.0.0-alpha14
 
 https://premake.github.io/download.html#v5
