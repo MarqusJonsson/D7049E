@@ -10,9 +10,8 @@ class InputSystem : public BaseSystem
 public:
     InputSystem()
     {
-        // this->componentManager = componentManager;
+       // this->componentManager = componentManager;
     }
-
     void EventSubscribe(EventBus* eventBus)
     {
         eventBus->subscribe(this, &InputSystem::mouseClickEvent);
@@ -33,4 +32,6 @@ public:
         printf("Keyboard key = %i in InputSystem \n", keyClickEvent->key);
 
     }
+
+
 };
