@@ -25,3 +25,6 @@
 [submodule "Sne/extlibs/imgui"]
 	path = Sne/extlibs/imgui
 	url = https://github.com/osksun/imgui.git
+[submodule "Sne/extlibs/bgfx"]
+	path = Sne/extlibs/bgfx
+	url = https://github.com/MarqusJonsson/bgfx
