@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "SystemManager.h"
 //ManagerManager manages managers
+//ManagerManager bundles up the functions of each manager to simplify operations such as deleting an entity.
 class ManagerManager
 {
 public:
