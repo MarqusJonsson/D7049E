@@ -8,5 +8,4 @@ public:
 	{
 		this->key = key;
 	}
-private:
 };
