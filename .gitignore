@@ -1,0 +1,10 @@
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+# Build folder
+Sne/build/**
+Sne/Sandbox/obj/**
+Sne/Sne/obj/**
