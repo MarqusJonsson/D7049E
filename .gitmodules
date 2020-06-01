@@ -1,9 +1,6 @@
 [submodule "Sne/extlibs/glfw"]
 	path = Sne/extlibs/glfw
 	url = https://github.com/MarqusJonsson/glfw
-[submodule "Sne/extlibs/bgfx"]
-	path = Sne/extlibs/bgfx
-	url = https://github.com/MarqusJonsson/bgfx
 [submodule "Sne/extlibs/bx"]
 	path = Sne/extlibs/bx
 	url = https://github.com/MarqusJonsson/bx
