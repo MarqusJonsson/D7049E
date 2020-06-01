@@ -86,6 +86,7 @@ project "Sne"
 		path.join(OPTICK_DIR, "src"),
 		path.join(GLM_DIR, "glm"),
 		IMGUI_DIR,
+		"$(VULKAN_SDK)/include"
 	}
 	links {
 		"bgfx",
@@ -112,7 +113,8 @@ project "Sne"
 	filter {}
 	
 	filter "system:windows"
-		links { "opengl32", "gdi32", "kernel32", "psapi" }
+		libdirs {"$(VULKAN_SDK)/lib"}
+		links { "opengl32", "gdi32", "kernel32", "psapi","vulkan-1" }
 	setBxCompat()
 
 project "Sandbox"
@@ -153,7 +155,7 @@ project "bgfx"
 		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.h"),
 		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.cpp"),
 		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.inl"),
-		path.join(BGFX_DIR, "commmon/*.cpp"),
+		path.join(BGFX_DIR, "examples/commmon/*.cpp"),
 	}
 	excludes
 	{
