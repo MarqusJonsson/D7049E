@@ -4,6 +4,7 @@
 //#include "EASTL/unique_ptr.h"
 //#include "ManagerManager.h"
 
+// Base class for all systems, a system holds a set of entities which it will interact it.
 class BaseSystem
 {
 public:

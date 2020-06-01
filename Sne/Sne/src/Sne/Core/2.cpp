@@ -1,34 +1,47 @@
+/*
+ * Copyright 2011-2019 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ */
+
+
+ /*
+ #if defined(_MSC_VER)
+  // We have little choice but to disable this warning. See the FAQ for why.
+ #pragma warning(disable: 4244) // conversion from '___' to '___', possible loss of data
+ #endif
+ */
+
 #include "Application.h"
-#include <stdio.h>
 
-// Dear IMGUI
-#include "../ImGUI/imgui.h"
-#include "../ImGUI/imgui_impl_glfw.h"
-#include "../ImGUI/imgui_impl_vulkan.h"
 
-// BGFX + Vulkan
+//#include "common.h"
+//#include "bgfx_utils.h"
+//#include "imgui/imgui.h"
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+#include <stdio.h>          // printf, fprintf
+#include <stdlib.h>         // abort
+#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_VULKAN
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include "GLFW/glfw3.h"
+#include <GLFW\glfw3native.h>
+#include <vulkan/vulkan.h>
+
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 #include "logo.h"
 
-// Sound
 #include "soloud.h"
 #include "soloud_speech.h"
 #include "soloud_thread.h"
-
-// Pyhsics
-//#include "../Physics/Simulator.h"
-
-// Eastl
+#include "btBulletDynamicsCommon.h"
 #include <EASTL/algorithm.h>
 #include "EastlOverides.h"
-
-// Entity Component System
+ // Entity Component System
 #include "../ECS/BaseSystem.h"
 #include "../ECS/Entity.h"
 #include "../ECS/IComponentArray.h"
@@ -45,6 +58,8 @@
 #include "../EventSystem/Events/KeyClickEvent.h"
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
+
+static bool s_showStats = false;
 
 //#define IMGUI_UNLIMITED_FRAME_RATE
 #ifdef _DEBUG
@@ -67,14 +82,7 @@ static bool                     g_SwapChainRebuild = false;
 static int                      g_SwapChainResizeWidth = 0;
 static int                      g_SwapChainResizeHeight = 0;
 
-ImGui_ImplVulkanH_Window* wd;
 
-static bool s_showStats = false;
-// This should be moved into Application.h
-GLFWwindow* window;
-// Set view 0 to the same dimensions as the window and to clear the color buffer.
-const bgfx::ViewId kClearView = 0;
-//Physics::Simulator physicsSimulator;
 
 static void check_vk_result(VkResult err)
 {
@@ -355,6 +363,11 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
     wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
 }
 
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+}
+
 static void glfw_resize_callback(GLFWwindow*, int w, int h)
 {
     g_SwapChainRebuild = true;
@@ -362,30 +375,30 @@ static void glfw_resize_callback(GLFWwindow*, int w, int h)
     g_SwapChainResizeHeight = h;
 }
 
-static void glfw_errorCallback(int error, const char* description)
-{
-    fprintf(stderr, "GLFW error %d: %s\n", error, description);
-}
 
 static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
-    if (action == GLFW_PRESS)
-    {
-        eventBus->publish(new KeyClickEvent(key));
-    }
-    if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
-        s_showStats = !s_showStats;
+	EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS)
+	{
+		eventBus->publish(new KeyClickEvent(key));
+	}
+	if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
+		s_showStats = !s_showStats;
 }
 
 static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
-    if (action == GLFW_PRESS)
-    {
-        eventBus->publish(new MouseClickEvent(button));
-    }
+	EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS)
+	{
+		eventBus->publish(new MouseClickEvent(button));
+	}
 }
+
+
+
+
 
 Sne::Application::Application()
 {
@@ -395,19 +408,16 @@ Sne::Application::~Application()
 {
 }
 
-void Sne::Application::Run()
-{
-    initWindow();
-    initBGFX();
-  initExample();
-    mainLoop();
-    cleanup();
-}
+GLFWwindow* window;
+int width = 800;
+int height = 600;
+// Set view 0 to the same dimensions as the window and to clear the color buffer.
+const bgfx::ViewId kClearView = 0;
 
 void Sne::Application::initWindow()
 {
-    // Create a GLFW window.
-    glfwSetErrorCallback(glfw_errorCallback);
+    // Create a GLFW window without an OpenGL context.
+    glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return;
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -416,15 +426,103 @@ void Sne::Application::initWindow()
     if (!window)
         return;
     glfwSetKeyCallback(window, glfw_keyCallback);
-    glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);
+    // Call bgfx::renderFrame before bgfx::init to signal to bgfx not to create a render thread.
+    // Most graphics APIs must be used on the same thread that created the window.
+    bgfx::renderFrame();
+    // Initialize bgfx using the native window handle and window resolution.
+    bgfx::Init init;
+#if BX_PLATFORM_WINDOWS
+    init.platformData.nwh = glfwGetWin32Window(window);
+#endif
+    glfwGetWindowSize(window, &width, &height);
+    init.resolution.width = (uint32_t)width;
+    init.resolution.height = (uint32_t)height;
+    init.resolution.reset = BGFX_RESET_VSYNC;
+    init.type = bgfx::RendererType::Vulkan;
+    if (!bgfx::init(init))
+        return;
+    bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR);
+    bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
+}
 
-    /*
-    // Setup Dear ImGui
+
+void Sne::Application::Run()
+{
+	//Events
+	EventBus* eventBus = new EventBus();
+	//Managers
+	eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
+	//Entities
+	Entity player = managerManager->CreateEntity();
+	//Components
+	HealthComponent playerHealthComponent = HealthComponent();
+	playerHealthComponent.Init(100, 100);
+	managerManager->RegisterComponent<HealthComponent>();
+	PositionComponent playerPositionComponent = PositionComponent();
+	managerManager->RegisterComponent<PositionComponent>();
+	playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
+
+	managerManager->AddComponent(player, playerHealthComponent);
+	managerManager->AddComponent(player, playerPositionComponent);
+	//Systems
+	Signature combatSystemSignature;
+	combatSystemSignature.set(managerManager->GetComponentType<HealthComponent>());
+	eastl::shared_ptr mouseSystem = managerManager->RegisterSystem<InputSystem>();
+	eastl::shared_ptr combatSystem = managerManager->RegisterSystem<CombatSystem>();
+	combatSystem->setManagerManager(managerManager);
+	managerManager->SetSystemSignature<CombatSystem>(combatSystemSignature);
+	mouseSystem->EventSubscribe(eventBus);
+	combatSystem->EventSubscribe(eventBus);
+
+
+
+
+
+	/*//ImGui::CreateContext();
+	printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
+	eventBus->publish(new DamageEvent(player));
+	printf("%i player hp after \n", managerManager->GetComponent<HealthComponent>(player).health);
+    
+    // Setup GLFW window
+    glfwSetErrorCallback(glfw_error_callback);
+    if (!glfwInit())
+        return ;
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
+    glfwSetWindowUserPointer(window, eventBus);
+    glfwSetMouseButtonCallback(window, glfw_mouseInputCallback);
+    glfwSetKeyCallback(window, glfw_keyCallback);
+    // Setup Vulkan
+    if (!glfwVulkanSupported())
+    {
+        printf("GLFW: Vulkan Not Supported\n");
+        return ;
+    }
+    uint32_t extensions_count = 0;
+    const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
+    SetupVulkan(extensions, extensions_count);
+
+    // Create Window Surface
+    VkSurfaceKHR surface;
+    VkResult err = glfwCreateWindowSurface(g_Instance, window, g_Allocator, &surface);
+    check_vk_result(err);
+
+    // Create Framebuffers
+    int w, h;
+    glfwGetFramebufferSize(window, &w, &h);
+    glfwSetFramebufferSizeCallback(window, glfw_resize_callback);
+
+
+    ImGui_ImplVulkanH_Window* wd = &g_MainWindowData;
+    SetupVulkanWindow(wd, surface, w, h);
+    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
@@ -487,96 +585,24 @@ void Sne::Application::initWindow()
         err = vkDeviceWaitIdle(g_Device);
         check_vk_result(err);
         ImGui_ImplVulkan_DestroyFontUploadObjects();
-    }*/
-}
+    }
 
-void Sne::Application::initBGFX()
-{
-    // Call bgfx::renderFrame before bgfx::init to signal to bgfx not to create a render thread.
-    // Most graphics APIs must be used on the same thread that created the window.
-    bgfx::renderFrame();
-    // Initialize bgfx using the native window handle and window resolution.
-    bgfx::Init init;
-#if BX_PLATFORM_WINDOWS
-    init.platformData.nwh = glfwGetWin32Window(window);
-#endif
-    glfwGetWindowSize(window, &width, &height);
-    init.resolution.width = (uint32_t)width;
-    init.resolution.height = (uint32_t)height;
-    init.resolution.reset = BGFX_RESET_VSYNC;
-    init.type = bgfx::RendererType::Vulkan;
-    if (!bgfx::init(init))
-        return;
-    bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR);
-    bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
-}
-
-void Sne::Application::initExample()
-{
-    //Events
-    EventBus* eventBus = new EventBus();
-    glfwSetWindowUserPointer(window, eventBus);
-    //Managers
-    eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
-    //Entities
-    Entity player = managerManager->CreateEntity();
-    //Components
-    HealthComponent playerHealthComponent = HealthComponent();
-    playerHealthComponent.Init(100, 100);
-    managerManager->RegisterComponent<HealthComponent>();
-    PositionComponent playerPositionComponent = PositionComponent();
-    managerManager->RegisterComponent<PositionComponent>();
-    playerPositionComponent.Init(1.0f, 1.0f, 1.0f);
-
-    managerManager->AddComponent(player, playerHealthComponent);
-    managerManager->AddComponent(player, playerPositionComponent);
-    //Systems
-    Signature combatSystemSignature;
-    combatSystemSignature.set(managerManager->GetComponentType<HealthComponent>());
-    eastl::shared_ptr mouseSystem = managerManager->RegisterSystem<InputSystem>();
-    eastl::shared_ptr combatSystem = managerManager->RegisterSystem<CombatSystem>();
-    combatSystem->setManagerManager(managerManager);
-    managerManager->SetSystemSignature<CombatSystem>(combatSystemSignature);
-    mouseSystem->EventSubscribe(eventBus);
-    combatSystem->EventSubscribe(eventBus);
-
-    printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
-    eventBus->publish(new DamageEvent(player));
-    printf("%i player hp after \n", managerManager->GetComponent<HealthComponent>(player).health);
-
-   /* // Physics
-    physicsSimulator = Physics::Simulator();
-    // 0 mass gives an static object, > 0 gives dynamic
-    physicsSimulator.createCuboid(SneMath::vec3(1.0f), SneMath::vec3(0.0f), 0.0f);
-    physicsSimulator.createCuboid(SneMath::vec3(1.0f), SneMath::vec3(0.0f, 5.0f, 0.0f), 1.0f);
-    physicsSimulator.createCylinder(SneMath::vec3(1.0f), SneMath::vec3(0.0f, 10.0f, 0.0f), 1.0f);
-    physicsSimulator.createCone(1.0f, 1.0f, SneMath::vec3(0.0f, 15.0f, 0.0f), 1.0f);
-    physicsSimulator.createCapsule(1.0f, 1.0f, SneMath::vec3(0.0f, 20.0f, 0.0f), 1.0f);
-    physicsSimulator.createShpere(1.0f, SneMath::vec3(0.0f, 25.0f, 0.0f), 0.0f);*/
-}
-
-void Sne::Application::mainLoop()
-{
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    double currentFrame = glfwGetTime();;
-    double lastFrame = currentFrame;
-    double deltaTime;
-    while (!glfwWindowShouldClose(window)) {
+    // Main loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
-        // Handle window resize.
-        int oldWidth = width, oldHeight = height;
-        glfwGetWindowSize(window, &width, &height);
-        if (width != oldWidth || height != oldHeight) {
-            bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);
-            bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
-        }
-
-        /*// Resize swap chain?
+        // Resize swap chain?
         if (g_SwapChainRebuild && g_SwapChainResizeWidth > 0 && g_SwapChainResizeHeight > 0)
         {
             g_SwapChainRebuild = false;
@@ -594,12 +620,20 @@ void Sne::Application::mainLoop()
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
+        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
+            static float f = 0.0f;
             static int counter = 0;
 
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
             if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
             ImGui::SameLine();
@@ -609,49 +643,230 @@ void Sne::Application::mainLoop()
             ImGui::End();
         }
 
-        // DeltaTime
-        currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        */
-        // Physics, should probably not be done every frame
-        //physicsSimulator.update(deltaTime);
+        // 3. Show another simple window.
+        if (show_another_window)
+        {
+            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            ImGui::Text("Hello from another window!");
+            if (ImGui::Button("Close Me"))
+                show_another_window = false;
+            ImGui::End();
+        }
 
-        // This dummy draw call is here to make sure that view 0 is cleared if no other draw calls are submitted to view 0.
-        bgfx::touch(kClearView);
-       /*ImGui::Render();
-       ImDrawData* draw_data = ImGui::GetDrawData();
+        // Rendering
+        ImGui::Render();
+        ImDrawData* draw_data = ImGui::GetDrawData();
         const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
         if (!is_minimized)
         {
             FrameRender(wd, draw_data);
             FramePresent(wd);
-        }*/
-        // Use debug font to print information about this example.
-        bgfx::dbgTextClear();
-        bgfx::dbgTextImage(bx::max<uint16_t>(uint16_t(width / 2 / 8), 20) - 20, bx::max<uint16_t>(uint16_t(height / 2 / 16), 6) - 6, 40, 12, s_logo, 160);
-        bgfx::dbgTextPrintf(0, 0, 0x0f, "Press F1 to toggle stats.");
-        bgfx::dbgTextPrintf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
-        bgfx::dbgTextPrintf(80, 1, 0x0f, "\x1b[;0m    \x1b[;1m    \x1b[; 2m    \x1b[; 3m    \x1b[; 4m    \x1b[; 5m    \x1b[; 6m    \x1b[; 7m    \x1b[0m");
-        bgfx::dbgTextPrintf(80, 2, 0x0f, "\x1b[;8m    \x1b[;9m    \x1b[;10m    \x1b[;11m    \x1b[;12m    \x1b[;13m    \x1b[;14m    \x1b[;15m    \x1b[0m");
-        const bgfx::Stats* stats = bgfx::getStats();
-        bgfx::dbgTextPrintf(0, 2, 0x0f, "Backbuffer %dW x %dH in pixels, debug text %dW x %dH in characters.", stats->width, stats->height, stats->textWidth, stats->textHeight);
-        // Enable stats or debug text.
-        bgfx::setDebug(s_showStats ? BGFX_DEBUG_STATS : BGFX_DEBUG_TEXT);
-        // Advance to next frame. Process submitted rendering primitives.
-        bgfx::frame();
+        }
     }
-}
 
-void Sne::Application::cleanup()
-{
     // Cleanup
-    //VkResult err = vkDeviceWaitIdle(g_Device);
-    //check_vk_result(err);
-    //ImGui_ImplVulkan_Shutdown();
-    //ImGui_ImplGlfw_Shutdown();
-    //ImGui::DestroyContext();
+    err = vkDeviceWaitIdle(g_Device);
+    check_vk_result(err);
+    ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-    bgfx::shutdown();
+    CleanupVulkanWindow();
+    CleanupVulkan();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
+
+    return ;
+    */
+
+	//managerManager->DestroyEntity(player);
+
+	/*//printf("%f ===== \n",eastl::min(5.0f, 7.0f));
+	///-----includes_end-----
+
+	///-----initialization_start-----
+
+	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+
+	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+	///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+
+	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+
+	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+
+	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+	///-----initialization_end-----
+
+	//keep track of the shapes, we release memory at exit.
+	//make sure to re-use collision shapes among rigid bodies whenever possible!
+	btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
+	///create a few basic rigid bodies
+
+	//the ground is a cube of side 100 at position y = -56.
+	//the sphere will hit it at y = -6, with center at -5
+	{
+		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+
+		collisionShapes.push_back(groundShape);
+
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -56, 0));
+
+		btScalar mass(0.);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			groundShape->calculateLocalInertia(mass, localInertia);
+
+		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		//add the body to the dynamics world
+		dynamicsWorld->addRigidBody(body);
+	}
+
+	{
+		//create a dynamic rigidbody
+
+		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
+		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+		collisionShapes.push_back(colShape);
+
+		/// Create Dynamic Objects
+		btTransform startTransform;
+		startTransform.setIdentity();
+
+		btScalar mass(1.f);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			colShape->calculateLocalInertia(mass, localInertia);
+
+		startTransform.setOrigin(btVector3(2, 10, 0));
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		dynamicsWorld->addRigidBody(body);
+	}
+
+	/// Do some simulation
+
+	///-----stepsimulation_start-----
+	for (int i = 0; i < 150; i++)
+	{
+		dynamicsWorld->stepSimulation(1.f / 60.f, 10);
+
+		//print positions of all objects
+		for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+		{
+			btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
+			btRigidBody* body = btRigidBody::upcast(obj);
+			btTransform trans;
+			if (body && body->getMotionState())
+			{
+				body->getMotionState()->getWorldTransform(trans);
+			}
+			else
+			{
+				trans = obj->getWorldTransform();
+			}
+			printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+		}
+	}
+
+	///-----stepsimulation_end-----
+
+	//cleanup in the reverse order of creation/initialization
+
+	///-----cleanup_start-----
+
+	//remove the rigidbodies from the dynamics world and delete them
+	for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		dynamicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	//delete collision shapes
+	for (int j = 0; j < collisionShapes.size(); j++)
+	{
+		btCollisionShape* shape = collisionShapes[j];
+		collisionShapes[j] = 0;
+		delete shape;
+	}
+
+	//delete dynamics world
+	delete dynamicsWorld;
+
+	//delete solver
+	delete solver;
+
+	//delete broadphase
+	delete overlappingPairCache;
+
+	//delete dispatcher
+	delete dispatcher;
+
+	delete collisionConfiguration;
+
+	//next line is optional: it will be cleared by the destructor when the array goes out of scope
+	collisionShapes.clear();
+
+
+	// SOLOUD TEST
+	// Define a couple of variables
+	SoLoud::Soloud soloud;  // SoLoud engine core
+	SoLoud::Speech speech;  // A sound source (speech, in this case)
+
+	// Configure sound source
+	speech.setText("7 7 7   7 7 1   Hello world. Welcome to Sne.");
+
+	// initialize SoLoud.
+	soloud.init();
+
+	// Play the sound source (we could do this several times if we wanted)
+	soloud.play(speech);
+
+	// Wait until sounds have finished
+	while (soloud.getActiveVoiceCount() > 0)
+	{
+		// Still going, sleep for a bit
+		SoLoud::Thread::sleep(100);
+	}
+
+	// Clean up SoLoud
+	soloud.deinit();
+	// END OF SOLOUD TEST
+	*/
+	// GLFW & BGFX TEST
+	// Create a GLFW window without an OpenGL context.
 }
+
+
