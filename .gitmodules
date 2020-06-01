@@ -1,0 +1,30 @@
+[submodule "Sne/extlibs/glfw"]
+	path = Sne/extlibs/glfw
+	url = https://github.com/MarqusJonsson/glfw
+[submodule "Sne/extlibs/bgfx"]
+	path = Sne/extlibs/bgfx
+	url = https://github.com/MarqusJonsson/bgfx
+[submodule "Sne/extlibs/bx"]
+	path = Sne/extlibs/bx
+	url = https://github.com/MarqusJonsson/bx
+[submodule "Sne/extlibs/bimg"]
+	path = Sne/extlibs/bimg
+	url = https://github.com/MarqusJonsson/bimg
+[submodule "Sne/extlibs/soloud"]
+	path = Sne/extlibs/soloud
+	url = https://github.com/MarqusJonsson/soloud
+[submodule "Sne/extlibs/bullet3"]
+	path = Sne/extlibs/bullet3
+	url = https://github.com/osksun/bullet3.git
+[submodule "Sne/extlibs/EASTL"]
+	path = Sne/extlibs/EASTL
+	url = https://github.com/osksun/EASTL.git
+[submodule "Sne/extlibs/NomadTasks"]
+	path = Sne/extlibs/NomadTasks
+	url = https://github.com/MarqusJonsson/NomadTasks
+[submodule "Sne/extlibs/glm"]
+	path = Sne/extlibs/glm
+	url = https://github.com/osksun/glm
+[submodule "Sne/extlibs/imgui"]
+	path = Sne/extlibs/imgui
+	url = https://github.com/osksun/imgui.git
