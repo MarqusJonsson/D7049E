@@ -202,6 +202,7 @@ void Sne::Application::mainLoop()
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
+       
         // Handle window resize.
         int oldWidth = width, oldHeight = height;
         glfwGetWindowSize(window, &width, &height);
@@ -209,6 +210,10 @@ void Sne::Application::mainLoop()
             bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);
             bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
         }
+
+        const bgfx::ViewId kClearView = 0;
+        bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFFFF);
+        bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
 
         for (Entity e : renderables) {
             managerManager->GetComponent<CubeComponent>(e).render();
