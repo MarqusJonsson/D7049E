@@ -1,8 +1,6 @@
 #pragma once
 #include "Core.h"
 
-
-
 namespace Sne 
 {
 	class SNE_API Application
@@ -12,13 +10,13 @@ namespace Sne
 		virtual ~Application();
 		void Run();
 	private:
-		int width = 800;
-		int height = 600;
+		int width = 1280;
+		int height = 720;
 		void initWindow();
 		void initBGFX();
+		void initExample();
 		void mainLoop();
 		void cleanup();
-		void initExample();
 	};
 
 	// To be defined in CLIENT

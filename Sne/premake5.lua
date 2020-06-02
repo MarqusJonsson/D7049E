@@ -55,9 +55,6 @@ project "Sne"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.h"),
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.cpp"),
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.inl"),
 	}
 	
 	defines 
@@ -74,8 +71,6 @@ project "Sne"
 	{
 		path.join(BGFX_DIR, "include"),
 		path.join(BGFX_DIR, "3rdparty"),
-		path.join(BGFX_DIR, "examples"),
-		path.join(BGFX_DIR, "examples/examples/common/entry"),
 		path.join(BX_DIR, "include"),
 		path.join(GLFW_DIR, "include"),
 		path.join(SOLOUD_DIR, "include"),
@@ -113,8 +108,8 @@ project "Sne"
 	filter {}
 	
 	filter "system:windows"
-		libdirs {"$(VULKAN_SDK)/lib"}
-		links { "opengl32", "gdi32", "kernel32", "psapi","vulkan-1" }
+		libdirs { "$(VULKAN_SDK)/lib" }
+		links { "opengl32", "gdi32", "kernel32", "psapi", "vulkan-1" }
 	setBxCompat()
 
 project "Sandbox"
@@ -152,10 +147,6 @@ project "bgfx"
 		path.join(BGFX_DIR, "include/bgfx/**.h"),
 		path.join(BGFX_DIR, "src/*.cpp"),
 		path.join(BGFX_DIR, "src/*.h"),
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.h"),
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.cpp"),
-		--path.join(BGFX_DIR, "3rdparty/dear-imgui/**.inl"),
-		path.join(BGFX_DIR, "examples/commmon/*.cpp"),
 	}
 	excludes
 	{
@@ -167,6 +158,8 @@ project "bgfx"
 		path.join(BIMG_DIR, "include"),
 		path.join(BGFX_DIR, "include"),
 		path.join(BGFX_DIR, "3rdparty"),
+		path.join(BGFX_DIR, "3rdparty/khronos"),
+		path.join(BGFX_DIR, "3rdparty/dxsdk/include"),
 		path.join(GLFW_DIR, "include"),
 
 	}
@@ -247,6 +240,7 @@ group "dependencies/NomadTasks"
 
 group "dependencies/optick"
 	include "extlibs/NomadTasks/code/vendor/optick.lua"
+
 group "dependencies/imgui"
 	project "ImGui"
 	kind "StaticLib"
@@ -270,7 +264,6 @@ group "dependencies/imgui"
 		systemversion "latest"
 		cppdialect "C++17"
 		staticruntime "On"
-
 
 group "dependencies"
 

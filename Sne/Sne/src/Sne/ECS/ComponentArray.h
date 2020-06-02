@@ -1,5 +1,4 @@
 #pragma once
-// ComponentArray holds components of entities, each component type has it's own ComponentArray
 template<typename T>
 class ComponentArray : public IComponentArray
 {

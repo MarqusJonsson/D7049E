@@ -3,7 +3,6 @@
 #include "EASTL/array.h"
 #include "Entity.h"
 #include <cassert>
-// EntityManager is a list of functions for manipulating entities
 class EntityManager
 {
 public:

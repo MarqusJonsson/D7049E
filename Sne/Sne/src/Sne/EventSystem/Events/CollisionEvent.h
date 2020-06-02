@@ -5,8 +5,7 @@ struct CollisionEvent : public Event
 {
 	CollisionEvent(Entity entity1, Entity entity2)
 	{
-
 	}
-	Entity entity;
 
+	Entity entity;
 };

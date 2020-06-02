@@ -1,6 +1,6 @@
 #pragma once
 #include <EASTL\bitset.h>
-// Entity is a handle which components are connected to
+
 using Entity = size_t;
 
 const Entity MAX_ENTITIES = 5000;
