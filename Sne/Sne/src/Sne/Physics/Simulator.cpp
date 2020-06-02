@@ -31,22 +31,22 @@ void Physics::Simulator::setGravity(SneMath::vec3 gravity)
 	dynamicsWorld->setGravity(SneMath::vec3_to_btVector3(gravity));
 }
 
-void Physics::Simulator::createCollider(btCollisionShape* const coliderShape, SneMath::vec3 const& position, float const& _mass)
+void Physics::Simulator::createCollider(btCollisionShape* const colliderShape, SneMath::vec3 const& position, float const& _mass)
 {
-	collisionShapes.push_back(coliderShape);
-	btTransform coliderTransform;
-	coliderTransform.setIdentity();
-	coliderTransform.setOrigin(SneMath::vec3_to_btVector3(position));
+	collisionShapes.push_back(colliderShape);
+	btTransform colliderTransform;
+	colliderTransform.setIdentity();
+	colliderTransform.setOrigin(SneMath::vec3_to_btVector3(position));
 	btScalar mass(_mass);
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.0f);
 	btVector3 localInertia(0, 0, 0);
 	if (isDynamic)
-		coliderShape->calculateLocalInertia(mass, localInertia);
+		colliderShape->calculateLocalInertia(mass, localInertia);
 	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(coliderTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, coliderShape, localInertia);
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(colliderTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colliderShape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 	//add the body to the dynamics world
 	dynamicsWorld->addRigidBody(body);
@@ -54,39 +54,39 @@ void Physics::Simulator::createCollider(btCollisionShape* const coliderShape, Sn
 
 void Physics::Simulator::createCuboid(SneMath::vec3 const& extends, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btBoxShape(SneMath::vec3_to_btVector3(extends));
-	createCollider(coliderShape, position, mass);
+	btCollisionShape* colliderShape = new btBoxShape(SneMath::vec3_to_btVector3(extends));
+	createCollider(colliderShape, position, mass);
 }
 
 void Physics::Simulator::createSphere(float const& radius, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btSphereShape(btScalar(radius));
-	createCollider(coliderShape, position, mass);
+	btCollisionShape* colliderShape = new btSphereShape(btScalar(radius));
+	createCollider(colliderShape, position, mass);
 }
 
 void Physics::Simulator::createCapsule(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btCapsuleShape(btScalar(radius), btScalar(height));
-	createCollider(coliderShape, position, mass);
+	btCollisionShape* colliderShape = new btCapsuleShape(btScalar(radius), btScalar(height));
+	createCollider(colliderShape, position, mass);
 }
 
 void Physics::Simulator::createCylinder(SneMath::vec3 const& extends, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btCylinderShape(SneMath::vec3_to_btVector3(extends));
-	createCollider(coliderShape, position, mass);
+	btCollisionShape* colliderShape = new btCylinderShape(SneMath::vec3_to_btVector3(extends));
+	createCollider(colliderShape, position, mass);
 }
 
 void Physics::Simulator::createCone(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btConeShape(btScalar(radius), btScalar(height));
-	createCollider(coliderShape, position, mass);
+	btCollisionShape* colliderShape = new btConeShape(btScalar(radius), btScalar(height));
+	createCollider(colliderShape, position, mass);
 }
 
 /*
 void Physics::Simulator::createMultiSphereShape(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* coliderShape = new btMultiSphereShape((btScalar(radius), btScalar(height));
-	createCollider(coliderShape, position);
+	btCollisionShape* colliderShape = new btMultiSphereShape((btScalar(radius), btScalar(height));
+	createCollider(colliderShape, position);
 }
 */
 

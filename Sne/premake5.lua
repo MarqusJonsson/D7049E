@@ -15,7 +15,8 @@ local SANDBOX_DIR = "Sandbox"
 local NOMADTASKS_DIR = "extlibs/NomadTasks"
 local OPTICK_DIR = "extlibs/NomadTasks/code/vendor/optick"
 local GLM_DIR = "extlibs/glm"
-local IMGUI_DIR = "extlibs/imgui"
+--local IMGUI_DIR = "extlibs/imgui"
+
 workspace "Sne"
 	location (BUILD_DIR)
 	configurations { "Release", "Debug" }
@@ -80,8 +81,8 @@ project "Sne"
 		path.join(NOMADTASKS_DIR, "code/fiber/include"),
 		path.join(OPTICK_DIR, "src"),
 		path.join(GLM_DIR, "glm"),
-		IMGUI_DIR,
-		"$(VULKAN_SDK)/include"
+--		IMGUI_DIR,
+--		"$(VULKAN_SDK)/include"
 	}
 	links {
 		"bgfx",
@@ -96,7 +97,7 @@ project "Sne"
 		"LinearMath",
 		"EASTL",
 		"nomad-fiber",
-		"ImGui"
+--		"ImGui"
 	}
 	
 	--filter "configurations:Debug or Release"
@@ -108,8 +109,8 @@ project "Sne"
 	filter {}
 	
 	filter "system:windows"
-		libdirs { "$(VULKAN_SDK)/lib" }
-		links { "opengl32", "gdi32", "kernel32", "psapi", "vulkan-1" }
+--		libdirs { "$(VULKAN_SDK)/lib" }
+		links { "opengl32", "gdi32", "kernel32", "psapi" }--, "vulkan-1" }
 	setBxCompat()
 
 project "Sandbox"
@@ -241,29 +242,29 @@ group "dependencies/NomadTasks"
 group "dependencies/optick"
 	include "extlibs/NomadTasks/code/vendor/optick.lua"
 
-group "dependencies/imgui"
-	project "ImGui"
-	kind "StaticLib"
-	language "C++"
-
-	files
-	{
-		path.join(IMGUI_DIR,"imconfig.h"),
-		path.join(IMGUI_DIR,"imgui.h"),
-		path.join(IMGUI_DIR,"imgui.cpp"),
-		path.join(IMGUI_DIR,"imgui_draw.cpp"),
-		path.join(IMGUI_DIR,"imgui_internal.h"),
-		path.join(IMGUI_DIR,"imgui_widgets.cpp"),
-		path.join(IMGUI_DIR,"imstb_rectpack.h"),
-		path.join(IMGUI_DIR,"imstb_textedit.h"),
-		path.join(IMGUI_DIR,"imstb_truetype.h"),
-		path.join(IMGUI_DIR,"imgui_demo.cpp"),
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-		cppdialect "C++17"
-		staticruntime "On"
+--group "dependencies/imgui"
+--	project "ImGui"
+--	kind "StaticLib"
+--	language "C++"
+--
+--	files
+--	{
+--		path.join(IMGUI_DIR,"imconfig.h"),
+--		path.join(IMGUI_DIR,"imgui.h"),
+--		path.join(IMGUI_DIR,"imgui.cpp"),
+--		path.join(IMGUI_DIR,"imgui_draw.cpp"),
+--		path.join(IMGUI_DIR,"imgui_internal.h"),
+--		path.join(IMGUI_DIR,"imgui_widgets.cpp"),
+--		path.join(IMGUI_DIR,"imstb_rectpack.h"),
+--		path.join(IMGUI_DIR,"imstb_textedit.h"),
+--		path.join(IMGUI_DIR,"imstb_truetype.h"),
+--		path.join(IMGUI_DIR,"imgui_demo.cpp"),
+--	}
+--
+--	filter "system:windows"
+--		systemversion "latest"
+--		cppdialect "C++17"
+--		staticruntime "On"
 
 group "dependencies"
 
