@@ -1,10 +1,11 @@
 #pragma once
 #include "../BaseSystem.h"
-#include "../../EventSystem/Events/DamageEvent.h"
+#include "../ManagerManager.h"
 #include "../Components/HealthComponent.h"
-#include "../ECS/managerManager.h"
+#include "../../EventSystem/Events/DamageEvent.h"
+#include "../../EventSystem/EventBus.h"
 
-class CombatSystem : public BaseSystem 
+class CombatSystem : public BaseSystem
 {
 
 public:
@@ -12,26 +13,26 @@ public:
     {
     }
 
-   /* CombatSystem(ManagerManager managerManager)
-    {
-        this->managerManager = managerManager;
-    }
+    /* CombatSystem(ManagerManager managerManager)
+     {
+         this->managerManager = managerManager;
+     }
 
-    void Init(ManagerManager managerManager)
-    {
-        this->managerManager = managerManager;
-    }*/
+     void Init(ManagerManager managerManager)
+     {
+         this->managerManager = managerManager;
+     }*/
 
-    void EventSubscribe(EventBus* eventBus) 
+    void EventSubscribe(EventBus* eventBus)
     {
         eventBus->subscribe(this, &CombatSystem::DamageEvent);
     }
 
-    void DamageEvent(DamageEvent* damageEvent) 
+    void DamageEvent(DamageEvent* damageEvent)
     {
         printf("damage event triggered \n");
         HealthComponent& healthComponent = managerManager->GetComponent<HealthComponent>(damageEvent->entity);
-        if (healthComponent.health - 1 <= 0) 
+        if (healthComponent.health - 1 <= 0)
         {
             managerManager->DestroyEntity(damageEvent->entity);
         }

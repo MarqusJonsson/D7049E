@@ -6,11 +6,9 @@
 #include <iostream>
 class InputSystem : public BaseSystem
 {
-
 public:
     InputSystem()
     {
-        // this->componentManager = componentManager;
     }
 
     void EventSubscribe(EventBus* eventBus)
@@ -21,7 +19,6 @@ public:
 
     void mouseClickEvent(MouseClickEvent* mouseClickEvent)
     {
-
         //GLFWwindow* window = mouseClickEvent->getGLFWwindow();
         printf("Mouse button = %i in InputSystem\n", mouseClickEvent->button);
         //glfwSetMouseButtonCallback(mouseClickEvent->getGLFWwindow(), glfw_mouseInputCallback);
@@ -31,6 +28,5 @@ public:
     void keyClickEvent(KeyClickEvent* keyClickEvent)
     {
         printf("Keyboard key = %i in InputSystem \n", keyClickEvent->key);
-
     }
 };

@@ -1,14 +1,13 @@
 #pragma once
+#include "../../Math/Math.h"
 struct PositionComponent
 {
 public:
-	float x, y, z;
+	SneMath::vec3 pos;
 
-	void Init(float x, float y, float z)
+	void Init(SneMath::vec3 pos)
 	{
-		this->x = x;
-		this->y = y;
-		this->z = z;
+		this->pos = pos;
 	}
 };
 

@@ -5,13 +5,14 @@ namespace Sne
 {
 	class SNE_API Application
 	{
+	private:
+		int width = 1280;
+		int height = 720;
 	public:
 		Application();
 		virtual ~Application();
 		void Run();
 	private:
-		int width = 1280;
-		int height = 720;
 		void initWindow();
 		void initBGFX();
 		void initExample();

@@ -26,97 +26,80 @@ void Physics::Simulator::setup()
 	dynamicsWorld->setGravity(btVector3(0,-10,0));
 }
 
-void Physics::Simulator::setGravity(SneMath::vec3 gravity)
+void Physics::Simulator::setGravity(SneMath::vec3 const& gravity)
 {
 	dynamicsWorld->setGravity(SneMath::vec3_to_btVector3(gravity));
 }
 
-void Physics::Simulator::createCollider(btCollisionShape* const colliderShape, SneMath::vec3 const& position, float const& _mass)
+btCollisionShape* Physics::Simulator::createCuboidCollision(SneMath::vec3 const& extends)
 {
-	collisionShapes.push_back(colliderShape);
-	btTransform colliderTransform;
-	colliderTransform.setIdentity();
-	colliderTransform.setOrigin(SneMath::vec3_to_btVector3(position));
-	btScalar mass(_mass);
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.0f);
-	btVector3 localInertia(0, 0, 0);
-	if (isDynamic)
-		colliderShape->calculateLocalInertia(mass, localInertia);
-	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(colliderTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colliderShape, localInertia);
-	btRigidBody* body = new btRigidBody(rbInfo);
-	//add the body to the dynamics world
-	dynamicsWorld->addRigidBody(body);
+	btCollisionShape* collisionShape = new btBoxShape(btVector3(btScalar(1.0f), btScalar(1.0f), btScalar(1.0f)));
+	collisionShape->setLocalScaling(SneMath::vec3_to_btVector3(extends));
+	collisionShapes.push_back(collisionShape);
+	return collisionShape;
 }
 
-void Physics::Simulator::createCuboid(SneMath::vec3 const& extends, SneMath::vec3 const& position, float const& mass)
+btCollisionShape* Physics::Simulator::createSphereCollision(float const& radius)
 {
-	btCollisionShape* colliderShape = new btBoxShape(SneMath::vec3_to_btVector3(extends));
-	createCollider(colliderShape, position, mass);
+	btCollisionShape* collisionShape = new btSphereShape(btScalar(radius));
+	collisionShapes.push_back(collisionShape);
+	return collisionShape;
 }
 
-void Physics::Simulator::createSphere(float const& radius, SneMath::vec3 const& position, float const& mass)
+btCollisionShape* Physics::Simulator::createCapsuleCollision(float const& radius, float const& height)
 {
-	btCollisionShape* colliderShape = new btSphereShape(btScalar(radius));
-	createCollider(colliderShape, position, mass);
+	btCollisionShape* collisionShape = new btCapsuleShape(btScalar(radius), btScalar(height));
+	collisionShapes.push_back(collisionShape);
+	return collisionShape;
 }
 
-void Physics::Simulator::createCapsule(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
+btCollisionShape* Physics::Simulator::createCylinderCollision(SneMath::vec3 const& extends)
 {
-	btCollisionShape* colliderShape = new btCapsuleShape(btScalar(radius), btScalar(height));
-	createCollider(colliderShape, position, mass);
+	btCollisionShape* collisionShape = new btCylinderShape(SneMath::vec3_to_btVector3(extends));
+	collisionShapes.push_back(collisionShape);
+	return collisionShape;
 }
 
-void Physics::Simulator::createCylinder(SneMath::vec3 const& extends, SneMath::vec3 const& position, float const& mass)
+btCollisionShape* Physics::Simulator::createConeCollision(float const& radius, float const& height)
 {
-	btCollisionShape* colliderShape = new btCylinderShape(SneMath::vec3_to_btVector3(extends));
-	createCollider(colliderShape, position, mass);
-}
-
-void Physics::Simulator::createCone(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
-{
-	btCollisionShape* colliderShape = new btConeShape(btScalar(radius), btScalar(height));
-	createCollider(colliderShape, position, mass);
+	btCollisionShape* collisionShape = new btConeShape(btScalar(radius), btScalar(height));
+	collisionShapes.push_back(collisionShape);
+	return collisionShape;
 }
 
 /*
-void Physics::Simulator::createMultiSphereShape(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
+btColllisionShape* Physics::Simulator::createMultiSphereShape(float const& radius, float const& height, SneMath::vec3 const& position, float const& mass)
 {
-	btCollisionShape* colliderShape = new btMultiSphereShape((btScalar(radius), btScalar(height));
-	createCollider(colliderShape, position);
+	btCollisionShape* collisionShape = new btMultiSphereShape(...);
+	return collisionShape;
 }
 */
+btRigidBody* Physics::Simulator::createRigidBody(btCollisionShape* const collisionShape, btTransform const& collisionTransform, float const& _mass, SneMath::vec3 const& inertia)
+{
+	btScalar mass(_mass);
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.0f);
+	btVector3 localInertia = SneMath::vec3_to_btVector3(inertia);
+	if (isDynamic)
+		collisionShape->calculateLocalInertia(mass, localInertia);
+	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects ?
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects ?
+	btDefaultMotionState* motionState = new btDefaultMotionState(collisionTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, collisionShape, localInertia);
+	btRigidBody* body = new btRigidBody(rbInfo);
+	return body;
+}
 
-void Physics::Simulator::update(double timeStep)
+void Physics::Simulator::addToSimulation(btRigidBody* rigidBody)
+{
+	//add the body to the dynamics world
+	dynamicsWorld->addRigidBody(rigidBody);
+}
+
+void Physics::Simulator::update(double const& timeStep, int const& maxSubSteps)
 {
 	// Update simulation
-	dynamicsWorld->stepSimulation(btScalar(timeStep), 1);
-	positions = eastl::vector<SneMath::vec3>();
-	rotations = eastl::vector<SneMath::vec3>();
-	// print positions of all objects
-	for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-	{
-		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-		btRigidBody* body = btRigidBody::upcast(obj);
-		btTransform trans;
-		if (body && body->getMotionState())
-		{
-			body->getMotionState()->getWorldTransform(trans);
-		}
-		else
-		{
-			trans = obj->getWorldTransform();
-		}
-		// Quaternion
-		//trans.getRotation()
-		float yaw, pitch, roll;
-		trans.getRotation().getEulerZYX(yaw, pitch, roll);
-		positions.push_back(SneMath::btVector3_to_vec3(trans.getOrigin()));
-		rotations.push_back(SneMath::vec3(yaw, pitch, roll));
-	}
+	dynamicsWorld->stepSimulation(btScalar(timeStep), maxSubSteps);
 }
 
 void Physics::Simulator::shutdown()

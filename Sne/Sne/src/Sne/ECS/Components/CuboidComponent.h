@@ -1,12 +1,10 @@
+#pragma once
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 #include <stdio.h>
 #include <bx/allocator.h>
 #include <bgfx/platform.h>
 #include <bx/math.h>
-
-bgfx::VertexBufferHandle m_vbh;
-bgfx::IndexBufferHandle m_ibh;
 
 struct PosColorVertex
 {
@@ -72,43 +70,33 @@ bgfx::ShaderHandle loadShader(const char* FILENAME)
     return bgfx::createShader(mem);
 }
 
-struct CubeComponent {
-
-    float pos_x, pos_y, pos_z;
-    float rot_x, rot_y, rot_z;
+struct CuboidComponent {
+    bgfx::VertexBufferHandle vbh;
     bgfx::IndexBufferHandle ibh;
     bgfx::ProgramHandle m_program;
 
 public:
-
-    void Init(float x, float y, float z, float rx, float ry, float rz) {
-        pos_x = x;
-        pos_y = y;
-        pos_z = z;
-        rot_x = rx;
-        rot_y = ry;
-        rot_z = rz;
+    void Init()
+    {
         bgfx::ShaderHandle vsh = loadShader("../Sne/src/Sne/Ressources/vs_cubes.bin");
         bgfx::ShaderHandle fsh = loadShader("../Sne/src/Sne/Ressources/fs_cubes.bin");
         m_program = bgfx::createProgram(vsh, fsh, true);
 
         PosColorVertex::init();
         // Create static vertex buffer.
-        m_vbh = bgfx::createVertexBuffer(
+        vbh = bgfx::createVertexBuffer(
             // Static data can be passed with bgfx::makeRef
             bgfx::makeRef(cubeVertices, sizeof(cubeVertices))
             , PosColorVertex::ms_layout
         );
 
         // Create static index buffer for triangle list rendering.
-        m_ibh = bgfx::createIndexBuffer(
+        ibh = bgfx::createIndexBuffer(
             // Static data can be passed with bgfx::makeRef
             bgfx::makeRef(cubeTriList, sizeof(cubeTriList))
         );
-
-        ibh = m_ibh;
     }
-
+    /*
     void render() {
         unsigned int counter = 0;
         const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
@@ -120,14 +108,14 @@ public:
         bgfx::setViewTransform(0, view, proj);
 
         float mtx[16];
-        bx::mtxRotateXYZ(mtx, rot_x, rot_y, rot_z);
+        bx::mtxRotateXYZ(mtx, rot.x, rot.y, rot.z);
         bgfx::setTransform(mtx);
 
         // Set view 0 default viewport.
         bgfx::setViewRect(0, 0, 0, uint16_t(1024), uint16_t(720));
-        mtx[12] = pos_x;
-        mtx[13] = pos_y;
-        mtx[14] = pos_z;
+        mtx[12] = pos.x;
+        mtx[13] = pos.y;
+        mtx[14] = pos.z;
 
         // Set model matrix for rendering.
         bgfx::setTransform(mtx);
@@ -143,12 +131,9 @@ public:
         // process submitted rendering primitives.
     }
 
-    void Update(float x, float y, float z, float rx, float ry, float rz) {
-        pos_x = x;
-        pos_y = y;
-        pos_z = z;
-        rot_x = rx;
-        rot_y = ry;
-        rot_z = rz;
+    void Update(SneMath::vec3 pos, SneMath::vec3 rot) {
+        CubeComponent::pos = pos;
+        CubeComponent::rot = rot;
     }
+    */
 };

@@ -13,7 +13,6 @@ public:
 		eastl::unique_ptr<SystemManager> systemManager = eastl::make_unique<SystemManager>();
 	}*/
 
-
 	// Entity methods
 	Entity CreateEntity()
 	{
@@ -28,7 +27,6 @@ public:
 
 		systemManager.EntityDestroyed(entity);
 	}
-
 
 	// Component methods
 	template<typename T>

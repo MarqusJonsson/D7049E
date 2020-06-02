@@ -8,5 +8,4 @@ class BaseSystem
 {
 public:
 	eastl::set<Entity> entities;
-
 };
