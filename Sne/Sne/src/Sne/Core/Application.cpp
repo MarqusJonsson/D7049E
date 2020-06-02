@@ -1,12 +1,11 @@
 #include "Application.h"
 #include <stdio.h>
 
-// BGFX + Vulkan
+// BGFX
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include "logo.h"
@@ -100,7 +99,7 @@ void Sne::Application::initWindow()
         return;
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     //glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
+    window = glfwCreateWindow(width, height, "Sne", nullptr, nullptr);
     if (!window)
         return;
     glfwSetKeyCallback(window, glfw_keyCallback);
@@ -169,7 +168,7 @@ void Sne::Application::initExample()
     physicsSimulator.createCylinder(SneMath::vec3(1.0f), SneMath::vec3(0.0f, 10.0f, 0.0f), 1.0f);
     physicsSimulator.createCone(1.0f, 1.0f, SneMath::vec3(0.0f, 15.0f, 0.0f), 1.0f);
     physicsSimulator.createCapsule(1.0f, 1.0f, SneMath::vec3(0.0f, 20.0f, 0.0f), 1.0f);
-    physicsSimulator.createShpere(1.0f, SneMath::vec3(0.0f, 25.0f, 0.0f), 0.0f);
+    physicsSimulator.createSphere(1.0f, SneMath::vec3(0.0f, 25.0f, 0.0f), 0.0f);
 }
 
 void Sne::Application::mainLoop()

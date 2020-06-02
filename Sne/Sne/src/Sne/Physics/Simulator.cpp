@@ -58,7 +58,7 @@ void Physics::Simulator::createCuboid(SneMath::vec3 const& extends, SneMath::vec
 	createCollider(coliderShape, position, mass);
 }
 
-void Physics::Simulator::createShpere(float const& radius, SneMath::vec3 const& position, float const& mass)
+void Physics::Simulator::createSphere(float const& radius, SneMath::vec3 const& position, float const& mass)
 {
 	btCollisionShape* coliderShape = new btSphereShape(btScalar(radius));
 	createCollider(coliderShape, position, mass);
