@@ -6,7 +6,6 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include "logo.h"
@@ -41,6 +40,9 @@
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
 
+// Renderer
+#include "../Renderer/Cube.h"
+
 
 static bool s_showStats = false;
 // This should be moved into Application.h
@@ -49,6 +51,9 @@ GLFWwindow* window;
 const bgfx::ViewId kClearView = 0;
 
 Physics::Simulator physicsSimulator;
+
+Cube cubeTest = Cube(-14.2, 12, 0, 0.5, 0, 0);
+Cube cubeTest2 = Cube(-14.2, -6, 0, 0.7, 0.2, 0);
 
 static void glfw_errorCallback(int error, const char* description)
 {
@@ -130,6 +135,10 @@ void Sne::Application::initBGFX()
 
 void Sne::Application::initExample()
 {
+
+    cubeTest.initCube();
+    cubeTest2.initCube();
+
     //Events
     EventBus* eventBus = new EventBus();
     glfwSetWindowUserPointer(window, eventBus);
@@ -171,6 +180,7 @@ void Sne::Application::initExample()
     physicsSimulator.createCapsule(1.0f, 1.0f, SneMath::vec3(0.0f, 20.0f, 0.0f), 1.0f);
     physicsSimulator.createShpere(1.0f, SneMath::vec3(0.0f, 25.0f, 0.0f), 0.0f);
 }
+
 
 void Sne::Application::mainLoop()
 {
@@ -220,8 +230,12 @@ void Sne::Application::mainLoop()
         // Enable stats or debug text.
         bgfx::setDebug(s_showStats ? BGFX_DEBUG_STATS : BGFX_DEBUG_TEXT);
 
+        cubeTest.updateCube();
+        cubeTest2.updateCube();
+
         // Advance to next frame. Process submitted rendering primitives.
         bgfx::frame();
+
     }
 }
 
