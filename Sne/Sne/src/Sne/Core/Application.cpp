@@ -60,6 +60,8 @@ Physics::Simulator physicsSimulator;
 
 //Managers
 eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
+Entity player;
+
 
 static void glfw_errorCallback(int error, const char* description)
 {
@@ -73,8 +75,17 @@ static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int acti
     {
         eventBus->publish(new KeyClickEvent(key));
     }
-    if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
+    if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    {
         s_showStats = !s_showStats;
+    }
+
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+    {
+
+            eventBus->publish(&DamageEvent(player));
+        
+    }
 }
 
 static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
@@ -194,7 +205,7 @@ void Sne::Application::initExample()
     physicsUpdateSystem->setManagerManager(managerManager);
 
     // Player
-    Entity player = managerManager->CreateEntity();
+    player = managerManager->CreateEntity();
     // Player components
     HealthComponent playerHealthComponent = HealthComponent();
     playerHealthComponent.Init(100, 100);
@@ -212,7 +223,7 @@ void Sne::Application::initExample()
     cuboidComponent.Init();
     
     SneMath::vec3 floorPosition = SneMath::vec3(0.0f, -10.0f, 0.0f);
-    SneMath::vec3 floorRotation = SneMath::vec3(0.0f, 0.0f, 0.0f);
+    SneMath::vec3 floorRotation = SneMath::vec3(0.0f, 45.0f, 0.0f);
     SneMath::vec3 floorScale = SneMath::vec3(10.0f, 0.1f, 5.0f);
     TransformComponent floorTransformComponent = TransformComponent();
     floorTransformComponent.Init(floorPosition, floorRotation, floorScale);
@@ -220,7 +231,7 @@ void Sne::Application::initExample()
     btTransform floorCollisionTransform;
     floorCollisionTransform.setIdentity();
     floorCollisionTransform.setOrigin(SneMath::vec3_to_btVector3(floorPosition));
-    btQuaternion floorQuaternion = btQuaternion(btScalar(floorRotation.x), btScalar(floorRotation.y), btScalar(floorRotation.z));
+    btQuaternion floorQuaternion = btQuaternion(btScalar(floorRotation.y), btScalar(floorRotation.x), btScalar(floorRotation.z));
     floorCollisionTransform.setRotation(floorQuaternion);
     btCollisionShape* floorCollisionShape = physicsSimulator.createCuboidCollision(floorScale);
     btRigidBody* floorRigidBody = physicsSimulator.createRigidBody(floorCollisionShape, floorCollisionTransform, 0.0f);
@@ -294,7 +305,7 @@ void Sne::Application::initExample()
     // Test publish an event
     printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
     eventBus.publish(&DamageEvent(player));
-    printf("%i player hp after \n", managerManager->GetComponent<HealthComponent>(player).health);
+
 
 }
 

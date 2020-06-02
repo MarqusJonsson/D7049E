@@ -40,7 +40,9 @@ public:
         {
             healthComponent.health -= 1;
         }
+        printf("%i player hp after \n", healthComponent.health);
     }
+
 
     void setManagerManager(eastl::shared_ptr<ManagerManager> managerManager)
     {
