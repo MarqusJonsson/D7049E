@@ -142,4 +142,13 @@ public:
         // Advance to next frame. Rendering thread will be kicked to
         // process submitted rendering primitives.
     }
+
+    void Update(float x, float y, float z, float rx, float ry, float rz) {
+        pos_x = x;
+        pos_y = y;
+        pos_z = z;
+        rot_x = rx;
+        rot_y = ry;
+        rot_z = rz;
+    }
 };

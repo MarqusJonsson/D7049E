@@ -193,6 +193,7 @@ void Sne::Application::initExample()
     physicsSimulator.createShpere(1.0f, SneMath::vec3(0.0f, 25.0f, 0.0f), 0.0f);
 }
 
+float x = 0;
 
 void Sne::Application::mainLoop()
 {
@@ -215,7 +216,10 @@ void Sne::Application::mainLoop()
         bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFFFF);
         bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
 
+
         for (Entity e : renderables) {
+            managerManager->GetComponent<CubeComponent>(e).Update(14, -6, 2, 3, 0, x);
+            x = x + 0.01;
             managerManager->GetComponent<CubeComponent>(e).render();
         }
         // DeltaTime
