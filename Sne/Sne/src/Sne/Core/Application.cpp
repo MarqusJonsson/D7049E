@@ -1,7 +1,7 @@
 #include "Application.h"
 #include <stdio.h>
 
-// BGFX + Vulkan
+// BGFX
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
@@ -9,6 +9,9 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include "logo.h"
+#include <bx/allocator.h>
+#include <bgfx/platform.h>
+#include <bx/math.h>
 
 // Sound
 #include "soloud.h"
@@ -31,6 +34,7 @@
 #include "../ECS/Systems/InputSystem.h"
 #include "../ECS/Systems/CombatSystem.h"
 #include "../ECS/Components/PositionComponent.h"
+#include "../ECS/Components/CubeComponent.h"
 #include "../ECS/ManagerManager.h"
 
 // Event System
@@ -40,9 +44,6 @@
 #include "../EventSystem/Events/DamageEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
 
-// Renderer
-#include "../Renderer/Cube.h"
-
 
 static bool s_showStats = false;
 // This should be moved into Application.h
@@ -51,9 +52,10 @@ GLFWwindow* window;
 const bgfx::ViewId kClearView = 0;
 
 Physics::Simulator physicsSimulator;
+eastl::list<Entity> renderables;
 
-Cube cubeTest = Cube(-14.2, 12, 0, 0.5, 0, 0);
-Cube cubeTest2 = Cube(-14.2, -6, 0, 0.7, 0.2, 0);
+//Managers
+eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
 
 static void glfw_errorCallback(int error, const char* description)
 {
@@ -105,7 +107,7 @@ void Sne::Application::initWindow()
         return;
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     //glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
+    window = glfwCreateWindow(width, height, "Sne", nullptr, nullptr);
     if (!window)
         return;
     glfwSetKeyCallback(window, glfw_keyCallback);
@@ -136,17 +138,23 @@ void Sne::Application::initBGFX()
 void Sne::Application::initExample()
 {
 
-    cubeTest.initCube();
-    cubeTest2.initCube();
 
     //Events
     EventBus* eventBus = new EventBus();
     glfwSetWindowUserPointer(window, eventBus);
-    //Managers
-    eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
+
     //Entities
     Entity player = managerManager->CreateEntity();
+    Entity cube1 = managerManager->CreateEntity();
+    Entity cube2 = managerManager->CreateEntity();
+
     //Components
+    CubeComponent cube1Component = CubeComponent();
+    cube1Component.Init(-14.0, 6, 0, 1, 2, 0);
+    CubeComponent cube2Component = CubeComponent();
+    cube2Component.Init(-14.0, -4, 0, 1, 2, 0);
+    managerManager->RegisterComponent<CubeComponent>();
+
     HealthComponent playerHealthComponent = HealthComponent();
     playerHealthComponent.Init(100, 100);
     managerManager->RegisterComponent<HealthComponent>();
@@ -156,6 +164,10 @@ void Sne::Application::initExample()
 
     managerManager->AddComponent(player, playerHealthComponent);
     managerManager->AddComponent(player, playerPositionComponent);
+    managerManager->AddComponent(cube1, cube1Component);
+    managerManager->AddComponent(cube2, cube2Component);
+    renderables.push_back(cube1);
+    renderables.push_back(cube2);
     //Systems
     Signature combatSystemSignature;
     combatSystemSignature.set(managerManager->GetComponentType<HealthComponent>());
@@ -198,6 +210,9 @@ void Sne::Application::mainLoop()
             bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
         }
 
+        for (Entity e : renderables) {
+            managerManager->GetComponent<CubeComponent>(e).render();
+        }
         // DeltaTime
         currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -210,7 +225,7 @@ void Sne::Application::mainLoop()
         physicsSimulator.update(deltaTime);
 
         // Use debug font to print information about this example.
-        bgfx::dbgTextClear();
+       /* bgfx::dbgTextClear();
         bgfx::dbgTextImage(bx::max<uint16_t>(uint16_t(width / 2 / 8), 20) - 20, bx::max<uint16_t>(uint16_t(height / 2 / 16), 6) - 6, 40, 12, s_logo, 160);
         bgfx::dbgTextPrintf(0, 0, 0x0f, "Press F1 to toggle stats.");
         
@@ -227,11 +242,10 @@ void Sne::Application::mainLoop()
         bgfx::dbgTextPrintf(80, 2, 0x0f, "\x1b[;8m    \x1b[;9m    \x1b[;10m    \x1b[;11m    \x1b[;12m    \x1b[;13m    \x1b[;14m    \x1b[;15m    \x1b[0m");
         const bgfx::Stats* stats = bgfx::getStats();
         bgfx::dbgTextPrintf(0, 2, 0x0f, "Backbuffer %dW x %dH in pixels, debug text %dW x %dH in characters.", stats->width, stats->height, stats->textWidth, stats->textHeight);
+        */
         // Enable stats or debug text.
         bgfx::setDebug(s_showStats ? BGFX_DEBUG_STATS : BGFX_DEBUG_TEXT);
 
-        cubeTest.updateCube();
-        cubeTest2.updateCube();
 
         // Advance to next frame. Process submitted rendering primitives.
         bgfx::frame();

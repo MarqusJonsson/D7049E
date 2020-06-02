@@ -1,5 +1,9 @@
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
+#include <stdio.h>
+#include <bx/allocator.h>
+#include <bgfx/platform.h>
+#include <bx/math.h>
 
 bgfx::VertexBufferHandle m_vbh;
 bgfx::IndexBufferHandle m_ibh;
@@ -68,7 +72,7 @@ bgfx::ShaderHandle loadShader(const char* FILENAME)
     return bgfx::createShader(mem);
 }
 
-class Cube {
+struct CubeComponent {
 
     float pos_x, pos_y, pos_z;
     float rot_x, rot_y, rot_z;
@@ -77,7 +81,7 @@ class Cube {
 
 public:
 
-    Cube(float x, float y, float z, float rx, float ry, float rz) {
+    void Init(float x, float y, float z, float rx, float ry, float rz) {
         pos_x = x;
         pos_y = y;
         pos_z = z;
@@ -87,9 +91,7 @@ public:
         bgfx::ShaderHandle vsh = loadShader("../Sne/src/Sne/Ressources/vs_cubes.bin");
         bgfx::ShaderHandle fsh = loadShader("../Sne/src/Sne/Ressources/fs_cubes.bin");
         m_program = bgfx::createProgram(vsh, fsh, true);
-    }
 
-    void initCube() {
         PosColorVertex::init();
         // Create static vertex buffer.
         m_vbh = bgfx::createVertexBuffer(
@@ -107,7 +109,7 @@ public:
         ibh = m_ibh;
     }
 
-    void updateCube() {
+    void render() {
         unsigned int counter = 0;
         const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
         const bx::Vec3 eye = { 0.0f, 0.0f, -30.0f };
