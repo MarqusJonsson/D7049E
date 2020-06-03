@@ -13,8 +13,8 @@ namespace Physics
 		btBroadphaseInterface* overlappingPairCache;
 		btSequentialImpulseConstraintSolver* solver;
 		btDiscreteDynamicsWorld* dynamicsWorld;
-		//keep track of the shapes, we release memory at exit.
-		//make sure to re-use collision shapes among rigid bodies whenever possible!
+		// Keep track of the shapes, we release memory at exit.
+		// Make sure to re-use collision shapes among rigid bodies whenever possible!
 		btAlignedObjectArray<btCollisionShape*> collisionShapes;
 	public:
 		Simulator();

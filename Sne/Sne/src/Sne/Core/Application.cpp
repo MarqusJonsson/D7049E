@@ -8,7 +8,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
-#include "logo.h"
 #include <bx/allocator.h>
 #include <bgfx/platform.h>
 #include <bx/math.h>
@@ -48,52 +47,58 @@
 #include "../EventSystem/Events/RenderEvent.h"
 #include "../EventSystem/MemberFunctionHandler.h"
 
-
-static bool s_showStats = false;
-// This should be moved into Application.h
+// A lot of the code here should be abracted into other classes and functions 
+// but were placed here temporarly in order to be able to provide a demo within
+// the given time frame of the project.
+// Reference to window
 GLFWwindow* window;
+// Bool to show debug stats or not
+static bool s_showStats = false;
 // Set view 0 to the same dimensions as the window and to clear the color buffer.
 const bgfx::ViewId kClearView = 0;
 
 EventBus eventBus;
 Physics::Simulator physicsSimulator;
-
-//Managers
 eastl::shared_ptr<ManagerManager> managerManager = eastl::make_shared<ManagerManager>();
 Entity player;
 
-
+// glfw error callback
 static void glfw_errorCallback(int error, const char* description)
 {
     fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
+// glfw key callback
 static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    // Get a pointer to the event bus from the glfw window
     EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
-    if (action == GLFW_PRESS)
+    if (action == GLFW_PRESS) // Any key pressed
     {
-        eventBus->publish(new KeyClickEvent(key));
+        // Publish key click event to the event bus
+        eventBus->publish(&KeyClickEvent(key));
     }
-    if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    if (key == GLFW_KEY_F1 && action == GLFW_PRESS) // F1 key press
     {
         s_showStats = !s_showStats;
     }
-
-    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS) // Q key press
     {
-
-            eventBus->publish(&DamageEvent(player));
+        // Publish damage event 
+        eventBus->publish(&DamageEvent(player));
         
     }
 }
 
+// glfw mouse input callback
 static void glfw_mouseInputCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    // Get a pointer to the event bus from the glfw window
     EventBus* eventBus = static_cast<EventBus*>(glfwGetWindowUserPointer(window));
     if (action == GLFW_PRESS)
     {
-        eventBus->publish(new MouseClickEvent(button));
+        // Publish mouse click event to the event bus
+        eventBus->publish(&MouseClickEvent(button));
     }
 }
 
@@ -150,6 +155,7 @@ void Sne::Application::initBGFX()
     bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
 }
 
+// Ugly example code
 void Sne::Application::initExample()
 {
     // Setup camera view
@@ -283,19 +289,6 @@ void Sne::Application::initExample()
 
     physicsSimulator.setGravity(SneMath::vec3(0.0f, -9.0f, 0.0f));
     
-    /*instantiateCuboid(&cuboid1Component,
-        SneMath::vec3(-10.0f, -1.0f, 0.0f),
-        SneMath::vec3(0.0f, 45.0f, 0.0f),
-        SneMath::vec3(2.0f, 1.0f, 1.0f));
-    instantiateCuboid(&cuboid1Component,
-        SneMath::vec3(10.0f, 0.0f, 0.0f),
-        SneMath::vec3(0.0f, 0.0f, 0.0f),
-        SneMath::vec3(1.0f, 1.0f, 1.0f));
-    instantiateCuboid(&cuboid1Component,
-        SneMath::vec3(-10.0f, 0.0f, 0.0f),
-        SneMath::vec3(0.0f, 0.0f, 0.0f),
-        SneMath::vec3(1.0f, 1.0f, 1.0f));*/
-
     // Provide a reference to the eventBus for each system
     mouseSystem->EventSubscribe(&eventBus);
     combatSystem->EventSubscribe(&eventBus);
@@ -305,8 +298,6 @@ void Sne::Application::initExample()
     // Test publish an event
     printf("%i player hp before \n", managerManager->GetComponent<HealthComponent>(player).health);
     eventBus.publish(&DamageEvent(player));
-
-
 }
 
 void Sne::Application::mainLoop()

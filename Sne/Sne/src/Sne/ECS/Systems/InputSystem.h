@@ -4,6 +4,7 @@
 #include "../../EventSystem/Events/MouseClickEvent.h"
 #include "../../EventSystem/Events/KeyClickEvent.h"
 #include <iostream>
+// System for handling input events
 class InputSystem : public BaseSystem
 {
 public:

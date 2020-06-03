@@ -1,6 +1,7 @@
 #pragma once
 #include "../Event.h"
 #include "../../Physics/Simulator.h"
+// Event to update physics in a simulated dynamic physics world
 struct PhysicsUpdateEvent : public Event
 {
 	Physics::Simulator* simulator;

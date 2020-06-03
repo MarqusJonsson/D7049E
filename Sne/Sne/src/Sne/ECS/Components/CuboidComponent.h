@@ -78,8 +78,8 @@ struct CuboidComponent {
 public:
     void Init()
     {
-        bgfx::ShaderHandle vsh = loadShader("../Sne/src/Sne/Ressources/vs_cubes.bin");
-        bgfx::ShaderHandle fsh = loadShader("../Sne/src/Sne/Ressources/fs_cubes.bin");
+        bgfx::ShaderHandle vsh = loadShader("../Sne/src/Sne/Resources/vs_cubes.bin");
+        bgfx::ShaderHandle fsh = loadShader("../Sne/src/Sne/Resources/fs_cubes.bin");
         m_program = bgfx::createProgram(vsh, fsh, true);
 
         PosColorVertex::init();
@@ -96,44 +96,4 @@ public:
             bgfx::makeRef(cubeTriList, sizeof(cubeTriList))
         );
     }
-    /*
-    void render() {
-        unsigned int counter = 0;
-        const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
-        const bx::Vec3 eye = { 0.0f, 0.0f, -30.0f };
-        float view[16];
-        bx::mtxLookAt(view, eye, at);
-        float proj[16];
-        bx::mtxProj(proj, 60.0f, float(1024) / float(720), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-        bgfx::setViewTransform(0, view, proj);
-
-        float mtx[16];
-        bx::mtxRotateXYZ(mtx, rot.x, rot.y, rot.z);
-        bgfx::setTransform(mtx);
-
-        // Set view 0 default viewport.
-        bgfx::setViewRect(0, 0, 0, uint16_t(1024), uint16_t(720));
-        mtx[12] = pos.x;
-        mtx[13] = pos.y;
-        mtx[14] = pos.z;
-
-        // Set model matrix for rendering.
-        bgfx::setTransform(mtx);
-
-        // Set vertex and index buffer.
-        bgfx::setVertexBuffer(0, m_vbh);
-        bgfx::setIndexBuffer(ibh);
-
-        // Submit primitive for rendering to view 0.
-        bgfx::submit(0, m_program);
-
-        // Advance to next frame. Rendering thread will be kicked to
-        // process submitted rendering primitives.
-    }
-
-    void Update(SneMath::vec3 pos, SneMath::vec3 rot) {
-        CubeComponent::pos = pos;
-        CubeComponent::rot = rot;
-    }
-    */
 };

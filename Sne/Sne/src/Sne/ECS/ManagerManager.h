@@ -3,7 +3,7 @@
 #include "EntityManager.h"
 #include "ComponentManager.h"
 #include "SystemManager.h"
-//ManagerManager manages managers
+// ManagerManager manages managers
 class ManagerManager
 {
 public:

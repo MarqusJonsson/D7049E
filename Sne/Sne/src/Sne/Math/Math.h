@@ -4,6 +4,7 @@
 #include <gtc/matrix_transform.hpp>
 #include "btBulletDynamicsCommon.h"
 
+// Math collection, mostly wrapped other libraries such as glm
 namespace SneMath
 {
 	typedef glm::vec3 vec3;

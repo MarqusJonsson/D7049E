@@ -5,6 +5,7 @@
 #include "../../EventSystem/Events/DamageEvent.h"
 #include "../../EventSystem/EventBus.h"
 
+// System for handling comabt events
 class CombatSystem : public BaseSystem
 {
 

@@ -7,9 +7,9 @@
 #include "../../EventSystem/EventBus.h"
 #include "../../EventSystem/Events/RenderEvent.h"
 
+// System for hadnling render events
 class RenderSystem : public BaseSystem
 {
-
 public:
     RenderSystem()
     {

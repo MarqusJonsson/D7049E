@@ -7,6 +7,7 @@
 #include "../../EventSystem/EventBus.h"
 #include "../../EventSystem/Events/PhysicsUpdateEvent.h"
 
+// System for handling physics update events
 class PhysicsUpdateSystem : public BaseSystem
 {
 
