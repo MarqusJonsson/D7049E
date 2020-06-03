@@ -25,3 +25,6 @@ Build guide:
 2. Go into D7049E/Sne
 
 3. Run GenerateProjects.bat to build solution (might need to run it several times due to unknown problems, when it displays time taken it means the build was successful)
+
+## Gif of an example using the engine
+![](SneTest.gif)
